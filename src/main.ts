@@ -1,3 +1,4 @@
+import { createMenu } from "./menu";
 import { PixelFont } from "./pixelFont";
 import type { FontMetrics } from "./pixelFont";
 import { computeView, render } from "./render";
@@ -19,7 +20,7 @@ const startRoom = Number(new URLSearchParams(location.search).get("room") ?? 1) 
 let house: Room[] = [];
 let game: GameState;
 let ratio = window.devicePixelRatio;
-let view: View = computeView(window.innerWidth, window.innerHeight, ratio);
+let view: View = computeView(canvas.clientWidth, canvas.clientHeight, ratio);
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -40,9 +41,9 @@ async function loadFont(name: string): Promise<PixelFont> {
 
 function resize(): void {
   ratio = window.devicePixelRatio;
-  canvas.width = Math.round(window.innerWidth * ratio);
-  canvas.height = Math.round(window.innerHeight * ratio);
-  view = computeView(window.innerWidth, window.innerHeight, ratio);
+  canvas.width = Math.round(canvas.clientWidth * ratio);
+  canvas.height = Math.round(canvas.clientHeight * ratio);
+  view = computeView(canvas.clientWidth, canvas.clientHeight, ratio);
 }
 
 function toggleFullscreen(): void {
@@ -70,7 +71,7 @@ function handleKey(event: KeyboardEvent, down: boolean): void {
 const BACKGROUND_IDS = [200, 201, 202, 203, 204, 205, 206, 207, 208, 209];
 
 async function start(): Promise<void> {
-  const [sprites, spritesOpaque, titleScene, stairsUp, stairsDown, airUp, panelLeft, panelRight, font, smallFont, rooms, backgrounds] =
+  const [sprites, spritesOpaque, titleScene, stairsUp, stairsDown, airUp, airSide, panelLeft, panelRight, font, smallFont, rooms, backgrounds] =
     await Promise.all([
       loadImage("assets/sprites.png"),
       loadImage("assets/sprites-opaque.png"),
@@ -78,6 +79,7 @@ async function start(): Promise<void> {
       loadImage("assets/stairs-up.png"),
       loadImage("assets/stairs-down.png"),
       loadImage("assets/air-up.png"),
+      loadImage("assets/air-side.png"),
       loadImage("assets/panel-left.png"),
       loadImage("assets/panel-right.png"),
       loadFont("font"),
@@ -92,6 +94,7 @@ async function start(): Promise<void> {
     stairsUp,
     stairsDown,
     airUp,
+    airSide,
     panelLeft,
     panelRight,
     font,
@@ -102,6 +105,20 @@ async function start(): Promise<void> {
   game = createGame(house, startRoom, true);
   const sounds = createSounds();
   const title = createTitle(art);
+  const menu = createMenu(house, sprites, {
+    newGame() {
+      sounds.unlock();
+      game = createGame(house, 0);
+      beginFlight(game);
+    },
+    goToRoom(roomIndex) {
+      sounds.unlock();
+      game = createGame(house, roomIndex);
+      beginFlight(game);
+    },
+    toggleSound: () => sounds.toggle(),
+    toggleFullscreen,
+  });
 
   resize();
   window.addEventListener("resize", resize);
@@ -110,7 +127,7 @@ async function start(): Promise<void> {
     handleKey(event, true);
   });
   window.addEventListener("keyup", (event) => handleKey(event, false));
-  window.addEventListener("pointerdown", () => {
+  canvas.addEventListener("pointerdown", () => {
     sounds.unlock();
     if (showsTitle(game)) beginFlight(game);
   });
@@ -124,6 +141,7 @@ async function start(): Promise<void> {
   if (import.meta.env.DEV) {
     Object.assign(window, {
       glider: {
+        menu,
         get game() {
           return game;
         },
@@ -145,10 +163,12 @@ async function start(): Promise<void> {
   const frame = (now: number): void => {
     pending += Math.min(MAX_FRAME_SECONDS, (now - last) / 1000);
     last = now;
+    if (menu.isOpen()) pending = 0;
     while (pending >= STEP_SECONDS) {
       step(game, house, input, STEP_SECONDS);
       pending -= STEP_SECONDS;
     }
+    menu.setCurrentRoom(game.roomIndex);
     for (const sound of game.sounds.splice(0)) sounds.play(sound);
     render(ctx, art, house, game, view, ratio);
     if (showsTitle(game)) title.draw(ctx, game, view, ratio);

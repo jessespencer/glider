@@ -1,17 +1,23 @@
 import type { PixelFont } from "./pixelFont";
 import {
   CRASH_VISIBLE_SECONDS,
+  airTop,
   ENEMY_BALLOON,
   ENEMY_COPTER,
   FADE_IN_SECONDS,
+  FAN_STREAM_H,
+  FAN_STREAM_TOP,
   OBJECT,
   PLANE_H,
+  SHRED_FEED_SECONDS,
   PLANE_W,
   ROOM_H,
   ROOM_W,
+  greaseSpillX,
   isAirOff,
   isCollected,
   isExitDuct,
+  isObjectOn,
   isRoomDark,
   isLightningFlash,
   movingHazard,
@@ -26,6 +32,13 @@ const PLANE_TILTED_BACK: Rect = { x: 1, y: 22, w: 46, h: 18 };
 const PLANE_ICON: Rect = { x: 1, y: 319, w: 33, h: 13 };
 const ROOM_NUMBER_PAPER: Rect = { x: 37, y: 319, w: 16, h: 21 };
 const ROOM_NUMBER_PAPER_BACK: Rect = { x: 55, y: 319, w: 16, h: 21 };
+const BAND_FRAMES: Rect[] = [
+  { x: 199, y: 163, w: 16, h: 7 },
+  { x: 199, y: 171, w: 16, h: 7 },
+];
+const BAND_OLIVE_RED = 128;
+const BAND_PINK = [255, 96, 192, 255];
+const BAND_FRAMES_PER_SECOND = 12;
 const BAND_ICON: Rect = { x: 38, y: 302, w: 5, h: 13 };
 const BATTERY_ICON: Rect = { x: 47, y: 302, w: 7, h: 13 };
 const VENT: Rect = { x: 1, y: 84, w: 47, h: 12 };
@@ -52,6 +65,8 @@ const FISH_FRAMES: Rect[] = [
   { x: 148, y: 143, w: 14, h: 16 },
   { x: 147, y: 161, w: 16, h: 14 },
 ];
+const GREASE_TIPPED: Rect = { x: 117, y: 211, w: 28, h: 17 };
+const SHREDDED_PAPER: Rect = { x: 267, y: 173, w: 42, h: 33 };
 const DROP: Rect = { x: 203, y: 57, w: 7, h: 12 };
 const COPTER_FRAMES: Rect[] = [
   { x: 167, y: 2, w: 30, h: 29 },
@@ -88,7 +103,7 @@ const OBJECT_SPRITES: Record<number, Rect> = {
   [OBJECT.wastebasket]: { x: 447, y: 270, w: 62, h: 71 },
   [OBJECT.computer]: { x: 266, y: 210, w: 43, h: 57 },
 };
-const ITEMS: number[] = [OBJECT.clock, OBJECT.paper, OBJECT.grease, OBJECT.battery, OBJECT.bands];
+const ITEMS: number[] = [OBJECT.clock, OBJECT.paper, OBJECT.battery, OBJECT.bands];
 
 const TILE_W = 64;
 const PANEL_W = 64;
@@ -101,6 +116,23 @@ const AIR_TILE = 8;
 const AIR_STEP_PIXELS = 2;
 const AIR_STEPS_PER_SECOND = 12;
 const FADE_IN_STEPS = 6;
+const WOOD_ORANGE = "#f08848";
+const WOOD_BROWN = "#7a4a22";
+const CABINET_TOP_H = 7;
+const CABINET_OVERHANG = 2;
+const CABINET_SHADOW = 14;
+const CABINET_KICK_H = 5;
+const CABINET_DOOR_W = 64;
+const CABINET_DOOR_INSET = 8;
+const CABINET_DOOR_GAP = 11;
+const SHELF_SHADOW = 13;
+const SHELF_BRACKET_INSET = 18;
+const SHELF_BRACKET_W = 8;
+const SHELF_BRACKET_H = 26;
+const GREASE_DEPTH = 2;
+const GREASE_COLOR = "#5a6b1e";
+const SHRED_SLOT_DEPTH = 4;
+const SHRED_FALL_SPEED = 90;
 const WINDOW_FRAME = "#7a4a22";
 const WINDOW_FRAME_LIGHT = "#d08040";
 const WINDOW_BEVEL = "#909090";
@@ -172,6 +204,7 @@ export interface Art {
   stairsUp: HTMLImageElement;
   stairsDown: HTMLImageElement;
   airUp: HTMLImageElement;
+  airSide: HTMLImageElement;
   panelLeft: HTMLImageElement;
   panelRight: HTMLImageElement;
   font: PixelFont;
@@ -232,33 +265,73 @@ function drawAirColumn(ctx: CanvasRenderingContext2D, art: Art, centerX: number,
   ctx.restore();
 }
 
-function woodBlock(ctx: CanvasRenderingContext2D, o: Rect): void {
+let cachedDither: CanvasPattern | null = null;
+
+/** Every other pixel black, the way the original shades without any transparency. */
+function ditherShadow(ctx: CanvasRenderingContext2D): CanvasPattern {
+  if (cachedDither) return cachedDither;
+  const tile = document.createElement("canvas");
+  tile.width = 2;
+  tile.height = 2;
+  const tileCtx = tile.getContext("2d")!;
+  tileCtx.fillStyle = BLACK;
+  tileCtx.fillRect(0, 0, 1, 1);
+  tileCtx.fillRect(1, 1, 1, 1);
+  cachedDither = ctx.createPattern(tile, "repeat")!;
+  return cachedDither;
+}
+
+function woodSlab(ctx: CanvasRenderingContext2D, r: Rect): void {
   ctx.fillStyle = BLACK;
-  ctx.fillRect(o.x, o.y, o.w, o.h);
-  ctx.fillStyle = "#7a4a22";
-  ctx.fillRect(o.x + 1, o.y + 1, o.w - 2, o.h - 2);
-  ctx.fillStyle = "#a9713c";
-  ctx.fillRect(o.x + 1, o.y + 1, o.w - 2, 2);
+  ctx.fillRect(r.x, r.y, r.w, r.h);
+  ctx.fillStyle = WOOD_ORANGE;
+  ctx.fillRect(r.x + 1, r.y + 1, r.w - 2, r.h - 3);
 }
 
 function drawCabinet(ctx: CanvasRenderingContext2D, o: RoomObject): void {
-  woodBlock(ctx, o);
-  const doors = Math.max(1, Math.round(o.w / 64));
-  const doorW = (o.w - 8) / doors;
-  ctx.fillStyle = "#3c220e";
+  ctx.fillStyle = ditherShadow(ctx);
+  ctx.beginPath();
+  ctx.moveTo(o.x, o.y + CABINET_TOP_H);
+  ctx.lineTo(o.x - CABINET_SHADOW, o.y + CABINET_TOP_H + CABINET_SHADOW);
+  ctx.lineTo(o.x - CABINET_SHADOW, o.y + o.h - CABINET_SHADOW);
+  ctx.lineTo(o.x, o.y + o.h);
+  ctx.fill();
+
+  ctx.fillStyle = BLACK;
+  ctx.fillRect(o.x, o.y, o.w, o.h);
+  ctx.fillStyle = WOOD_BROWN;
+  ctx.fillRect(o.x + 1, o.y + CABINET_TOP_H, o.w - 2, o.h - CABINET_TOP_H - CABINET_KICK_H);
+  woodSlab(ctx, { x: o.x - CABINET_OVERHANG, y: o.y, w: o.w + CABINET_OVERHANG * 2, h: CABINET_TOP_H });
+
+  const doors = Math.max(1, Math.round(o.w / CABINET_DOOR_W));
+  const pitch = (o.w - CABINET_DOOR_INSET * 2 + CABINET_DOOR_GAP) / doors;
+  const doorW = Math.round(pitch - CABINET_DOOR_GAP);
+  const doorH = o.h - CABINET_TOP_H - CABINET_KICK_H - CABINET_DOOR_INSET * 2 + 2;
+  if (doorW < 6 || doorH < 6) return;
+  ctx.strokeStyle = WOOD_ORANGE;
+  ctx.lineWidth = 1;
   for (let i = 0; i < doors; i++) {
-    const x = Math.round(o.x + 4 + i * doorW);
-    ctx.strokeStyle = "#3c220e";
-    ctx.lineWidth = 1;
-    ctx.strokeRect(x + 2.5, o.y + 7.5, Math.round(doorW) - 5, o.h - 13);
+    const x = Math.round(o.x + CABINET_DOOR_INSET + i * pitch);
+    ctx.strokeRect(x + 0.5, o.y + CABINET_TOP_H + CABINET_DOOR_INSET - 1.5, doorW - 1, doorH - 1);
   }
 }
 
 function drawShelf(ctx: CanvasRenderingContext2D, o: RoomObject): void {
-  woodBlock(ctx, o);
-  ctx.fillStyle = "#3c220e";
-  ctx.fillRect(o.x + 10, o.y + o.h, 3, 7);
-  ctx.fillRect(o.x + o.w - 13, o.y + o.h, 3, 7);
+  ctx.fillStyle = ditherShadow(ctx);
+  ctx.beginPath();
+  ctx.moveTo(o.x, o.y + o.h);
+  ctx.lineTo(o.x + o.w, o.y + o.h);
+  ctx.lineTo(o.x + o.w - SHELF_SHADOW, o.y + o.h + SHELF_SHADOW);
+  ctx.lineTo(o.x - SHELF_SHADOW, o.y + o.h + SHELF_SHADOW);
+  ctx.fill();
+
+  for (const x of [o.x + SHELF_BRACKET_INSET, o.x + o.w - SHELF_BRACKET_INSET - SHELF_BRACKET_W]) {
+    ctx.fillStyle = BLACK;
+    ctx.fillRect(x, o.y + o.h, SHELF_BRACKET_W, SHELF_BRACKET_H);
+    ctx.fillStyle = "#8a6a4a";
+    ctx.fillRect(x + 1, o.y + o.h, SHELF_BRACKET_W - 2, SHELF_BRACKET_H - 2);
+  }
+  woodSlab(ctx, o);
 }
 
 function drawTable(ctx: CanvasRenderingContext2D, art: Art, table: RoomObject): void {
@@ -368,6 +441,16 @@ function drawOnRect(ctx: CanvasRenderingContext2D, art: Art, sprite: Rect, o: Re
   drawSprite(ctx, art, sprite, o.x + (o.w - sprite.w) / 2, o.y + o.h - sprite.h);
 }
 
+function drawGreaseSpill(ctx: CanvasRenderingContext2D, art: Art, jar: RoomObject, spillX: number): void {
+  const bottom = jar.y + jar.h;
+  const start = jar.x + jar.w / 2;
+  ctx.fillStyle = BLACK;
+  ctx.fillRect(Math.min(start, spillX), bottom - GREASE_DEPTH - 1, Math.abs(spillX - start), GREASE_DEPTH + 1);
+  ctx.fillStyle = GREASE_COLOR;
+  ctx.fillRect(Math.min(start, spillX), bottom - GREASE_DEPTH, Math.abs(spillX - start), GREASE_DEPTH);
+  drawOnRect(ctx, art, GREASE_TIPPED, jar);
+}
+
 function frameAt(frames: Rect[], time: number, perSecond: number): Rect {
   return frames[Math.floor(time * perSecond) % frames.length];
 }
@@ -415,6 +498,12 @@ function drawObject(ctx: CanvasRenderingContext2D, art: Art, s: GameState, o: Ro
     case OBJECT.painting:
       ctx.drawImage(art.spritesOpaque, PAINTING.x, PAINTING.y, PAINTING.w, PAINTING.h, o.x, o.y, PAINTING.w, PAINTING.h);
       return;
+    case OBJECT.grease: {
+      const spillX = greaseSpillX(s, o, index);
+      if (spillX === null) break;
+      drawGreaseSpill(ctx, art, o, spillX);
+      return;
+    }
     case OBJECT.stairsUp:
       ctx.drawImage(art.stairsUp, o.x, o.y);
       return;
@@ -441,15 +530,58 @@ function drawObject(ctx: CanvasRenderingContext2D, art: Art, s: GameState, o: Ro
   drawMovingHazard(ctx, art, o, index, s.time);
 }
 
+function drawFanStream(ctx: CanvasRenderingContext2D, art: Art, left: number, right: number, top: number, time: number, direction: 1 | -1): void {
+  const drift = (Math.floor(time * AIR_STEPS_PER_SECOND) * AIR_STEP_PIXELS * direction) % AIR_TILE;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(left, top, right - left, FAN_STREAM_H);
+  ctx.clip();
+  for (let x = left - AIR_TILE * 2 + drift; x < right + AIR_TILE; x += AIR_TILE) {
+    for (let y = top; y < top + FAN_STREAM_H; y += AIR_TILE) {
+      ctx.drawImage(art.airSide, x, y);
+    }
+  }
+  ctx.restore();
+}
+
 /** Air runs in front of everything in the room, so paintings and furniture never hide it. */
 function drawAir(ctx: CanvasRenderingContext2D, art: Art, room: Room, s: GameState): void {
+  room.objects.forEach((o, index) => {
+    if (o.type !== OBJECT.fanLeft && o.type !== OBJECT.fanRight) return;
+    if (!isObjectOn(s, o, index)) return;
+    const blowsRight = o.type === OBJECT.fanRight;
+    const left = blowsRight ? o.x + o.w : o.amount;
+    const right = blowsRight ? o.amount : o.x;
+    drawFanStream(ctx, art, left, right, o.y + FAN_STREAM_TOP, s.time, blowsRight ? 1 : -1);
+  });
   if (isAirOff(s, room)) return;
   for (const o of room.objects) {
     const centerX = o.x + o.w / 2;
     if (o.type === OBJECT.ventUp) drawAirColumn(ctx, art, centerX, o.amount, o.y, s.time, 1);
-    if (o.type === OBJECT.candle) drawAirColumn(ctx, art, centerX, o.amount, o.y - CANDLE_FLAME_H, s.time, 1);
-    if (o.type === OBJECT.ventDown || isExitDuct(o)) drawAirColumn(ctx, art, centerX, o.y + o.h, o.amount, s.time, -1);
+    if (o.type === OBJECT.candle) drawAirColumn(ctx, art, centerX, airTop(room, o), o.y - CANDLE_FLAME_H, s.time, 1);
+    if (o.type === OBJECT.ventDown || isExitDuct(o)) drawAirColumn(ctx, art, centerX, o.y + o.h / 2, o.amount, s.time, -1);
   }
+}
+
+let cachedBandFrames: HTMLCanvasElement[] = [];
+
+/** The sheet's bands are olive, so they're recolored once to the pink of a real rubber band. */
+function bandFrames(art: Art): HTMLCanvasElement[] {
+  if (cachedBandFrames.length > 0) return cachedBandFrames;
+  cachedBandFrames = BAND_FRAMES.map((r) => {
+    const frame = document.createElement("canvas");
+    frame.width = r.w;
+    frame.height = r.h;
+    const ctx = frame.getContext("2d")!;
+    ctx.drawImage(art.sprites, r.x, r.y, r.w, r.h, 0, 0, r.w, r.h);
+    const image = ctx.getImageData(0, 0, r.w, r.h);
+    for (let i = 0; i < image.data.length; i += 4) {
+      if (image.data[i] === BAND_OLIVE_RED) image.data.set(BAND_PINK, i);
+    }
+    ctx.putImageData(image, 0, 0);
+    return frame;
+  });
+  return cachedBandFrames;
 }
 
 function drawEnemies(ctx: CanvasRenderingContext2D, art: Art, s: GameState): void {
@@ -459,8 +591,11 @@ function drawEnemies(ctx: CanvasRenderingContext2D, art: Art, s: GameState): voi
     else if (e.kind === ENEMY_COPTER) drawSprite(ctx, art, frameAt(COPTER_FRAMES, s.time, 10), e.x, e.y);
     else drawSprite(ctx, art, DART, e.x, e.y);
   }
-  ctx.fillStyle = WHITE;
-  for (const shot of s.shots) ctx.fillRect(Math.round(shot.x), Math.round(shot.y), 8, 2);
+  const frames = bandFrames(art);
+  for (const shot of s.shots) {
+    const frame = frames[Math.floor(s.time * BAND_FRAMES_PER_SECOND) % frames.length];
+    ctx.drawImage(frame, Math.round(shot.x), Math.round(shot.y - frame.height / 2));
+  }
 }
 
 function drawDarkness(ctx: CanvasRenderingContext2D, room: Room, time: number): void {
@@ -528,6 +663,34 @@ function drawPlane(ctx: CanvasRenderingContext2D, art: Art, s: GameState): void 
   const frame = planeFrame(s);
   const [shakeX, shakeY] = boostShake(s);
   drawSprite(ctx, art, frame, x + shakeX + (PLANE_W - frame.w) / 2, y + shakeY + (PLANE_H - frame.h) / 2);
+  ctx.restore();
+}
+
+/** The plane sinks into the slot on top while its shredded strips come out the bottom and fall. */
+function drawShredding(ctx: CanvasRenderingContext2D, art: Art, s: GameState): void {
+  const o = s.shredder;
+  if (!o) return;
+  const fed = Math.min(1, s.crashTime / SHRED_FEED_SECONDS);
+
+  if (fed < 1) {
+    const shake = BOOST_SHAKE[Math.floor(s.time * BOOST_SHAKE_PER_SECOND) % BOOST_SHAKE.length];
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, ROOM_W, o.y + SHRED_SLOT_DEPTH);
+    ctx.clip();
+    drawSprite(ctx, art, PLANE_FORWARD, s.x + shake, o.y - PLANE_H + fed * (PLANE_H + SHRED_SLOT_DEPTH));
+    ctx.restore();
+  }
+
+  const bottom = o.y + o.h;
+  const falling = Math.max(0, s.crashTime - SHRED_FEED_SECONDS);
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, bottom, ROOM_W, ROOM_H - bottom);
+  ctx.clip();
+  ctx.globalAlpha = Math.max(0, 1 - falling);
+  const x = o.x + (o.w - SHREDDED_PAPER.w) / 2;
+  drawSprite(ctx, art, SHREDDED_PAPER, x, bottom - SHREDDED_PAPER.h + fed * SHREDDED_PAPER.h + falling * SHRED_FALL_SPEED);
   ctx.restore();
 }
 
@@ -655,6 +818,7 @@ export function render(
   drawPlaneShadow(ctx, s);
   if (isRoomDark(s, room)) drawDarkness(ctx, room, s.time);
   drawPlane(ctx, art, s);
+  drawShredding(ctx, art, s);
   drawPopups(ctx, art, s);
   drawHud(ctx, art, s, room);
   drawTimeResult(ctx, art, s);

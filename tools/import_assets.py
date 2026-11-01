@@ -20,12 +20,13 @@ BITMAP_TYPE = 0x8002
 FONT_TYPE = 0x8008
 SPRITE_COLOR, SPRITE_MASK = 27, 1
 AIR_UP_COLOR, AIR_UP_MASK = 19, 18
+AIR_SIDE_COLOR, AIR_SIDE_MASK = 17, 16
 PANEL_LEFT, PANEL_RIGHT = 2, 3
 STAIRS_UP, STAIRS_DOWN = 5, 6
 TITLE_SCENE = 28
 SOUND_TYPE = 0xF009
-# Room backPictID -> bitmap resource. Matched by room names: Nippon, basement, attic, galley.
-BACKGROUNDS = {200: 7, 201: 8, 202: 30, 203: 9, 204: 29, 205: 10, 206: 31, 207: 32, 208: 33, 209: 34}
+# Room backPictID -> bitmap resource. Matched by room names and screenshots of the original.
+BACKGROUNDS = {200: 7, 201: 8, 202: 30, 203: 9, 204: 31, 205: 10, 206: 31, 207: 32, 208: 33, 209: 34}
 HOUSE_FILES = ["HOUSE.GHS", "HOUSE2.GHS"]
 # Objects whose amount (or extra, for ducts) names a room in their own house file.
 ROOM_LINK_TYPES = {5, 44, 45}
@@ -194,6 +195,7 @@ def main():
     bitmaps = read_resources(os.path.join(GAME_DIR, "GLIDER.EXE"), BITMAP_TYPE)
     write_masked(bitmaps, SPRITE_COLOR, SPRITE_MASK, "sprites.png")
     write_masked(bitmaps, AIR_UP_COLOR, AIR_UP_MASK, "air-up.png")
+    write_masked(bitmaps, AIR_SIDE_COLOR, AIR_SIDE_MASK, "air-side.png")
     write_opaque(bitmaps, SPRITE_COLOR, "sprites-opaque.png")
     write_opaque(bitmaps, TITLE_SCENE, "title-scene.png")
     write_opaque(bitmaps, STAIRS_UP, "stairs-up.png")

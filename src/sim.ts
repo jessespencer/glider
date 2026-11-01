@@ -59,7 +59,12 @@ const ACCEL = 2400;
 const BRAKE = 3000;
 const CEILING_BOUNCE = 105;
 const COLUMN_REACH = 17;
+const CEILING_AIR_TOP = 44;
 const FAN_PUSH = 110;
+/** The band of moving air, measured down from the top of the fan. */
+export const FAN_STREAM_TOP = 10;
+export const FAN_STREAM_H = 16;
+const FAN_STREAM_MARGIN = 8;
 const SHOT_SPEED = 320;
 const DART_POINTS = 300;
 const FLOOR_Y = 334;
@@ -88,6 +93,11 @@ const DUCT_REACH_Y = 14;
 /** Matches the length of the original's startup sound. */
 export const FADE_IN_SECONDS = 0.8;
 
+/** How long the shredder takes to pull the plane through, and to finish dropping the strips. */
+export const SHRED_FEED_SECONDS = 1;
+export const SHRED_SECONDS = 2;
+const SHRED_GRIND_SECONDS = 0.1;
+
 /** How long the wrecked plane stays frozen on screen before it vanishes. */
 export const CRASH_VISIBLE_SECONDS = 0.2;
 
@@ -97,6 +107,10 @@ const TIME_BONUS_PER_SECOND = 10;
 const TIME_BONUS_MINIMUM = 50;
 const TIME_RESULT_SECONDS = 1.6;
 
+const BUZZ_SECONDS = 0.17;
+const GREASE_SPREAD_SPEED = 120;
+const DRIP_FALL_SECONDS = 0.4;
+const DRIP_MIN_PERIOD_SECONDS = 1.2;
 const LIGHTNING_PERIOD_SECONDS = 7;
 const LIGHTNING_SECONDS = 0.45;
 
@@ -147,6 +161,7 @@ export type SoundEvent =
   | "powerSwitch"
   | "shred"
   | "steam"
+  | "grease"
   | "thunder"
   | "fire"
   | "pop"
@@ -230,6 +245,8 @@ export interface GameState {
   boosting: boolean;
   bands: number;
   collected: Set<string>;
+  /** When each knocked-over grease jar went down, so its spill can spread from that moment. */
+  greaseTipTimes: Map<string, number>;
   flipped: Set<string>;
   lightsOn: Set<number>;
   airOn: Set<number>;
@@ -242,6 +259,8 @@ export interface GameState {
   linkCooldown: number;
   entry: RoomEntry;
   crashTime: number;
+  /** The shredder eating the plane, if that's how this crash happened. */
+  shredder: RoomObject | null;
   fadeTime: number;
   time: number;
   sounds: SoundEvent[];
@@ -276,7 +295,7 @@ function enterRoom(s: GameState, house: Room[], roomIndex: number, x: number, y:
   saveEntry(s);
 }
 
-const TIMED_ITEMS: number[] = [OBJECT.clock, OBJECT.paper, OBJECT.grease, OBJECT.battery, OBJECT.bands];
+const TIMED_ITEMS: number[] = [OBJECT.clock, OBJECT.paper, OBJECT.battery, OBJECT.bands];
 
 function targetSeconds(room: Room): number {
   const items = room.objects.filter((o) => TIMED_ITEMS.includes(o.type)).length;
@@ -325,6 +344,7 @@ export function createGame(house: Room[], roomIndex = 0, opensWithFade = false):
     boosting: false,
     bands: 0,
     collected: new Set(),
+    greaseTipTimes: new Map(),
     flipped: new Set(),
     lightsOn: new Set(),
     airOn: new Set(),
@@ -336,6 +356,7 @@ export function createGame(house: Room[], roomIndex = 0, opensWithFade = false):
     linkCooldown: 0,
     entry: { x: START_X, y: START_Y, score: 0, energy: 0, bands: 0, collected: new Set() },
     crashTime: 0,
+    shredder: null,
     fadeTime: 0,
     time: 0,
     sounds: [],
@@ -362,6 +383,15 @@ export function isObjectOn(s: GameState, o: RoomObject, objectIndex: number): bo
 
 export function isCollected(s: GameState, objectIndex: number): boolean {
   return s.collected.has(objectKey(s.roomIndex, objectIndex));
+}
+
+/** How far a jar's grease has spread, or null if the jar is still standing. */
+export function greaseSpillX(s: GameState, jar: RoomObject, objectIndex: number): number | null {
+  const tippedAt = s.greaseTipTimes.get(objectKey(s.roomIndex, objectIndex));
+  if (tippedAt === undefined || !isCollected(s, objectIndex)) return null;
+  const start = jar.x + jar.w;
+  const reach = jar.amount - start;
+  return start + Math.min(Math.abs(reach), (s.time - tippedAt) * GREASE_SPREAD_SPEED) * Math.sign(reach);
 }
 
 export function isRoomDark(s: GameState, room: Room): boolean {
@@ -410,7 +440,8 @@ export function movingHazard(o: RoomObject, objectIndex: number, time: number): 
     return { x: o.x + 4, y: o.y - height * Math.sin(progress * Math.PI), w: 26, h: 26 };
   }
   if (o.type === OBJECT.drip) {
-    const progress = burst(time, Math.max(2, o.extra / TICKS_PER_SECOND), 0.9, offset);
+    const period = Math.max(DRIP_MIN_PERIOD_SECONDS, o.extra / (TICKS_PER_SECOND * 2));
+    const progress = burst(time, period, DRIP_FALL_SECONDS, offset);
     if (progress === null) return null;
     return { x: o.x + 4, y: o.y + (o.amount - o.y) * progress * progress, w: 7, h: 12 };
   }
@@ -444,6 +475,20 @@ export function isExitDuct(o: RoomObject): boolean {
   return o.type === OBJECT.duct && o.on;
 }
 
+/** Candle heat reaches the ceiling like a vent's air, unless something above it blocks the way. */
+export function airTop(room: Room, source: RoomObject): number {
+  if (source.type !== OBJECT.candle) return source.amount;
+  const centerX = source.x + source.w / 2;
+  const blocked = room.objects.some(
+    (o) =>
+      SOLID_TYPES.includes(o.type) &&
+      o.y < source.y &&
+      centerX + COLUMN_REACH > o.x &&
+      centerX - COLUMN_REACH < o.x + o.w,
+  );
+  return blocked ? source.amount : CEILING_AIR_TOP;
+}
+
 function verticalAir(s: GameState, room: Room): { rising: boolean; limit: number } | null {
   const centerX = s.x + PLANE_W / 2;
   for (const o of room.objects) {
@@ -451,7 +496,7 @@ function verticalAir(s: GameState, room: Room): { rising: boolean; limit: number
     const isSinking = o.type === OBJECT.ventDown || isExitDuct(o);
     if (!isRising && !isSinking) continue;
     if (Math.abs(centerX - (o.x + o.w / 2)) > COLUMN_REACH) continue;
-    if (isRising && s.y <= o.y) return { rising: true, limit: o.amount };
+    if (isRising && s.y <= o.y) return { rising: true, limit: airTop(room, o) };
     if (isSinking && s.y + PLANE_H >= o.y && s.y <= o.amount) return { rising: false, limit: o.amount };
   }
   return null;
@@ -462,7 +507,8 @@ function fanPush(s: GameState, room: Room): number {
   room.objects.forEach((o, index) => {
     if ((o.type !== OBJECT.fanLeft && o.type !== OBJECT.fanRight) || !isObjectOn(s, o, index)) return;
     const centerY = s.y + PLANE_H / 2;
-    if (centerY < o.y || centerY > o.y + o.h) return;
+    const streamY = o.y + FAN_STREAM_TOP;
+    if (centerY < streamY - FAN_STREAM_MARGIN || centerY > streamY + FAN_STREAM_H + FAN_STREAM_MARGIN) return;
     const centerX = s.x + PLANE_W / 2;
     if (o.type === OBJECT.fanRight && centerX >= o.x && centerX <= o.amount) push += FAN_PUSH;
     if (o.type === OBJECT.fanLeft && centerX <= o.x + o.w && centerX >= o.amount) push -= FAN_PUSH;
@@ -540,7 +586,15 @@ function respawnX(room: Room, preferredX: number): number {
   return closest(ventSpots) ?? closest(openSpots) ?? START_X;
 }
 
+function startShredding(s: GameState, shredder: RoomObject): void {
+  startCrash(s, "shred");
+  s.shredder = shredder;
+  s.x = shredder.x + shredder.w / 2 - PLANE_W / 2;
+  s.y = shredder.y - PLANE_H;
+}
+
 function respawn(s: GameState, house: Room[]): void {
+  s.shredder = null;
   s.lives -= 1;
   if (s.lives === 0) {
     s.phase = "gameOver";
@@ -672,7 +726,6 @@ function checkObjects(s: GameState, room: Room): void {
     if (s.phase !== "flying") return;
     const moving = movingHazard(o, index, s.time);
     if (moving && overlaps(s, moving)) {
-      if (o.type === OBJECT.outlet) s.sounds.push("zap");
       startCrash(s);
       return;
     }
@@ -684,7 +737,7 @@ function checkObjects(s: GameState, room: Room): void {
     switch (o.type) {
       case OBJECT.shredder:
         // Switched off, it's just a box the plane can pass.
-        if (isObjectOn(s, o, index)) startCrash(s, "shred");
+        if (isObjectOn(s, o, index)) startShredding(s, o);
         break;
       case OBJECT.candle:
         if (overlaps(s, candleFlame(o))) startCrash(s);
@@ -694,8 +747,14 @@ function checkObjects(s: GameState, room: Room): void {
       case OBJECT.hiddenBonus:
       case OBJECT.battery:
       case OBJECT.bands:
-      case OBJECT.grease:
         if (!isCollected(s, index)) takeItem(s, o, index);
+        break;
+      case OBJECT.grease:
+        if (!isCollected(s, index)) {
+          s.collected.add(objectKey(s.roomIndex, index));
+          s.greaseTipTimes.set(objectKey(s.roomIndex, index), s.time);
+          s.sounds.push("grease");
+        }
         break;
       case OBJECT.guitar:
         if (!isOverStrings(s, o)) break;
@@ -774,6 +833,12 @@ function fireBand(s: GameState, input: Input): void {
 
 function soundBursts(s: GameState, room: Room, dt: number): void {
   room.objects.forEach((o, index) => {
+    if (o.type === OBJECT.outlet) {
+      // The buzz clip is short, so it repeats for as long as the sparks last.
+      const newBuzz = Math.floor(s.time / BUZZ_SECONDS) !== Math.floor((s.time - dt) / BUZZ_SECONDS);
+      if (newBuzz && movingHazard(o, index, s.time)) s.sounds.push("zap");
+      return;
+    }
     if (o.type !== OBJECT.drip && o.type !== OBJECT.kettle) return;
     if (!movingHazard(o, index, s.time) || movingHazard(o, index, s.time - dt)) return;
     s.sounds.push(o.type === OBJECT.drip ? "drip" : "steam");
@@ -871,7 +936,12 @@ export function step(s: GameState, house: Room[], input: Input, dt: number): voi
   } else if (s.phase === "flying") {
     fly(s, house, input, dt);
   } else if (s.phase === "crashing") {
+    const before = s.crashTime;
     s.crashTime += dt;
-    if (s.crashTime >= CRASH_SECONDS) respawn(s, house);
+    if (s.shredder && s.crashTime < SHRED_FEED_SECONDS) {
+      const grinds = Math.floor(s.crashTime / SHRED_GRIND_SECONDS) !== Math.floor(before / SHRED_GRIND_SECONDS);
+      if (grinds) s.sounds.push("shred");
+    }
+    if (s.crashTime >= (s.shredder ? SHRED_SECONDS : CRASH_SECONDS)) respawn(s, house);
   }
 }

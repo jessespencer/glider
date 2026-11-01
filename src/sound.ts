@@ -3,7 +3,7 @@ import type { SoundEvent } from "./sim";
 const SOUND_COUNT = 31;
 
 // Confirmed by ear: crash, clock, battery, drip, guitar, startup, level, tick, shred, steam,
-// powerSwitch. The rest are matched by length and character; open ?sounds to audition them.
+// powerSwitch, zap, grease. The rest are matched by length and character; open ?sounds to audition them.
 const SOUND_FOR_EVENT: Record<SoundEvent, number> = {
   clock: 5,
   paper: 16,
@@ -15,11 +15,12 @@ const SOUND_FOR_EVENT: Record<SoundEvent, number> = {
   powerSwitch: 18,
   shred: 20,
   steam: 25,
+  grease: 14,
   thunder: 17,
   fire: 4,
-  pop: 24,
+  pop: 23,
   travel: 12,
-  zap: 14,
+  zap: 24,
   drip: 7,
   guitar: 15,
   startup: 2,
@@ -36,12 +37,15 @@ export interface Sounds {
   /** Browsers only start audio after a key press, so call this from one. */
   unlock(): void;
   play(event: SoundEvent): void;
+  /** Flips sound on or off and returns whether it's now on. */
+  toggle(): boolean;
 }
 
 export function createSounds(): Sounds {
   const context = new AudioContext();
   const buffers = new Map<number, AudioBuffer>();
   let levelSound: AudioBufferSourceNode | null = null;
+  let enabled = true;
 
   const start = (event: SoundEvent): AudioBufferSourceNode | null => {
     const buffer = buffers.get(SOUND_FOR_EVENT[event]);
@@ -70,7 +74,12 @@ export function createSounds(): Sounds {
     unlock() {
       if (context.state === "suspended") void context.resume();
     },
+    toggle() {
+      enabled = !enabled;
+      return enabled;
+    },
     play(event) {
+      if (!enabled) return;
       if (event === "level") {
         playLevel();
         return;
