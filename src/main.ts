@@ -59,7 +59,10 @@ function handleKey(event: KeyboardEvent, down: boolean): void {
 
   if (steering || event.code === "Space" || event.code === "Enter") {
     event.preventDefault();
-    if (game.phase === "ready") game.phase = "flying";
+    if (game.phase === "ready") {
+      game.phase = "flying";
+      game.sounds.push("startup");
+    }
   }
   if (event.code === "KeyR") game = createGame(house, startRoom);
   if (event.code === "KeyF") toggleFullscreen();

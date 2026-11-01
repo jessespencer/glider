@@ -2,19 +2,24 @@ import type { SoundEvent } from "./sim";
 
 const SOUND_COUNT = 31;
 
-// The original sounds are unnamed, so these are matched by length and character. Open ?sounds to
-// audition them all and correct this table by ear.
+// Confirmed by ear: crash, clock, battery, drip, guitar, startup, level. The rest are matched by
+// length and character; open ?sounds to audition them and correct this table.
 const SOUND_FOR_EVENT: Record<SoundEvent, number> = {
-  clock: 13,
+  clock: 5,
   paper: 16,
   bonus: 13,
-  pickup: 8,
-  crash: 17,
+  battery: 9,
+  bands: 8,
+  crash: 1,
   switch: 19,
   fire: 4,
   pop: 24,
   travel: 12,
-  zap: 5,
+  zap: 25,
+  drip: 7,
+  guitar: 11,
+  startup: 2,
+  level: 29,
   win: 29,
 };
 
@@ -31,6 +36,23 @@ export interface Sounds {
 export function createSounds(): Sounds {
   const context = new AudioContext();
   const buffers = new Map<number, AudioBuffer>();
+  let levelSound: AudioBufferSourceNode | null = null;
+
+  const start = (event: SoundEvent): AudioBufferSourceNode | null => {
+    const buffer = buffers.get(SOUND_FOR_EVENT[event]);
+    if (!buffer) return null;
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    source.connect(context.destination);
+    source.start();
+    return source;
+  };
+
+  const playLevel = (): void => {
+    // Rooms can go by faster than this jingle, so a new room cuts off the last one.
+    levelSound?.stop();
+    levelSound = start("level");
+  };
 
   for (const id of new Set(Object.values(SOUND_FOR_EVENT))) {
     void fetch(soundUrl(id))
@@ -44,12 +66,13 @@ export function createSounds(): Sounds {
       if (context.state === "suspended") void context.resume();
     },
     play(event) {
-      const buffer = buffers.get(SOUND_FOR_EVENT[event]);
-      if (!buffer) return;
-      const source = context.createBufferSource();
-      source.buffer = buffer;
-      source.connect(context.destination);
-      source.start();
+      if (event === "level") {
+        playLevel();
+        return;
+      }
+      const source = start(event);
+      // A new game opens with the startup sound, then the room's jingle.
+      if (event === "startup" && source) source.onended = playLevel;
     },
   };
 }

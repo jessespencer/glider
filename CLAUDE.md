@@ -7,5 +7,5 @@ Retro remake of Glider for Windows. TypeScript and Canvas, no framework, on purp
 - The plane always faces right and tilts back to reverse; it never flips.
 - A browser tab that's hidden pauses `requestAnimationFrame`, so test rules by stepping `src/sim.ts` directly in Node.
 - Room and object layout is in `read_house` in `tools/import_assets.py`. Sprite positions are in `src/render.ts`.
-- The original files don't name their sounds or enemies. `SOUND_FOR_EVENT` in `src/sound.ts` and the `ENEMY_*` kinds in `src/sim.ts` are guesses until checked by ear and against the original.
+- The original files don't name their sounds or enemies. The comment on `SOUND_FOR_EVENT` in `src/sound.ts` says which sounds are confirmed; the `ENEMY_*` kinds in `src/sim.ts` are still guesses.
 - Notes on running the original game: `~/Games/CLAUDE.md`.

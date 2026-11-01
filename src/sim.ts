@@ -119,13 +119,18 @@ export type SoundEvent =
   | "clock"
   | "paper"
   | "bonus"
-  | "pickup"
+  | "battery"
+  | "bands"
   | "crash"
   | "switch"
   | "fire"
   | "pop"
   | "travel"
   | "zap"
+  | "drip"
+  | "guitar"
+  | "startup"
+  | "level"
   | "win";
 
 export interface Input {
@@ -190,6 +195,7 @@ export interface GameState {
   flipped: Set<string>;
   lightsOn: Set<number>;
   airOn: Set<number>;
+  visitedRooms: Set<number>;
   enemies: Enemy[];
   shots: Shot[];
   touching: Set<number>;
@@ -220,6 +226,10 @@ function saveEntry(s: GameState): void {
 }
 
 function enterRoom(s: GameState, house: Room[], roomIndex: number, x: number, y: number): void {
+  if (!s.visitedRooms.has(roomIndex)) {
+    s.visitedRooms.add(roomIndex);
+    s.sounds.push("level");
+  }
   s.roomIndex = roomIndex;
   s.x = x;
   s.y = y;
@@ -248,6 +258,7 @@ export function createGame(house: Room[], roomIndex = 0): GameState {
     flipped: new Set(),
     lightsOn: new Set(),
     airOn: new Set(),
+    visitedRooms: new Set([roomIndex]),
     enemies: [],
     shots: [],
     touching: new Set(),
@@ -401,10 +412,10 @@ function takeItem(s: GameState, o: RoomObject, index: number): void {
   s.collected.add(objectKey(s.roomIndex, index));
   if (o.type === OBJECT.battery) {
     s.energy += o.amount;
-    s.sounds.push("pickup");
+    s.sounds.push("battery");
   } else if (o.type === OBJECT.bands) {
     s.bands += o.amount;
-    s.sounds.push("pickup");
+    s.sounds.push("bands");
   } else {
     s.score += o.amount;
     s.popups.push({ amount: o.amount, x: o.x + o.w / 2, y: o.y, age: 0 });
@@ -497,7 +508,6 @@ function checkObjects(s: GameState, room: Room): void {
       case OBJECT.shelf:
       case OBJECT.books:
       case OBJECT.cabinet:
-      case OBJECT.guitar:
       case OBJECT.computer:
       case OBJECT.toaster:
       case OBJECT.fishbowl:
@@ -516,6 +526,10 @@ function checkObjects(s: GameState, room: Room): void {
       case OBJECT.bands:
       case OBJECT.grease:
         if (!isCollected(s, index)) takeItem(s, o, index);
+        break;
+      case OBJECT.guitar:
+        touchingNow.add(index);
+        if (!s.touching.has(index)) s.sounds.push("guitar");
         break;
       case OBJECT.lightSwitch:
       case OBJECT.thermostat:
@@ -583,6 +597,13 @@ function fireBand(s: GameState, input: Input): void {
   s.firing = input.fire;
 }
 
+function soundDrips(s: GameState, room: Room, dt: number): void {
+  room.objects.forEach((o, index) => {
+    if (o.type !== OBJECT.drip) return;
+    if (movingHazard(o, index, s.time) && !movingHazard(o, index, s.time - dt)) s.sounds.push("drip");
+  });
+}
+
 function changeRoomAtEdges(s: GameState, house: Room[], room: Room): boolean {
   const next = house[s.roomIndex + 1];
   const previous = house[s.roomIndex - 1];
@@ -634,6 +655,7 @@ function fly(s: GameState, house: Room[], input: Input, dt: number): void {
   }
   if (checkLinks(s, house, room)) return;
   checkObjects(s, room);
+  soundDrips(s, room, dt);
   moveEnemies(s, dt);
   moveShots(s, dt);
 }
