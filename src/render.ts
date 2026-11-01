@@ -13,6 +13,7 @@ import {
   PLANE_W,
   ROOM_H,
   ROOM_W,
+  TURN_DURATION_SECONDS,
   greaseSpillX,
   isAirOff,
   isCollected,
@@ -27,6 +28,17 @@ import type { GameState, Rect, Room, RoomObject } from "./sim";
 
 // Positions on the original sprite sheet. The plane always faces right; the second frame is the
 // same plane tilted back, which is how it flies backward.
+const PLANE_LEFT: Rect = { x: 2, y: 45, w: 44, h: 16 };
+const PLANE_LEFT_TILTED_BACK: Rect = { x: 2, y: 64, w: 43, h: 18 };
+/** The plane rotating from facing right, through head-on, to facing left. */
+const PLANE_TURN: Rect[] = [
+  { x: 219, y: 3, w: 41, h: 15 },
+  { x: 219, y: 24, w: 42, h: 15 },
+  { x: 223, y: 45, w: 34, h: 15 },
+  { x: 220, y: 66, w: 41, h: 14 },
+  { x: 223, y: 87, w: 34, h: 15 },
+  { x: 219, y: 108, w: 42, h: 15 },
+];
 export const PLANE_FORWARD: Rect = { x: 2, y: 3, w: 44, h: 16 };
 const PLANE_TILTED_BACK: Rect = { x: 1, y: 22, w: 46, h: 18 };
 const PLANE_ICON: Rect = { x: 1, y: 319, w: 33, h: 13 };
@@ -116,6 +128,8 @@ const AIR_TILE = 8;
 const AIR_STEP_PIXELS = 2;
 const AIR_STEPS_PER_SECOND = 12;
 const FADE_IN_STEPS = 6;
+const STEAM_CLOUD_X = 26;
+const STEAM_CLOUD_Y = 26;
 const WOOD_ORANGE = "#f08848";
 const WOOD_BROWN = "#7a4a22";
 const CABINET_TOP_H = 7;
@@ -157,7 +171,7 @@ const PLANE_SHADOW_LEFT_SLOPE = 1;
 const PLANE_SHADOW_RIGHT_SLOPE = 2.5;
 const PLANE_SHADOW_ALPHA = 0.5;
 
-const DARK_ALPHA = 0.93;
+const DARK_ALPHA = 0.965;
 const DARK_LIGHTNING_ALPHA = 0.35;
 const CANDLE_LIGHT_RADIUS = 46;
 const CANDLE_FLAME_H = 8;
@@ -167,13 +181,13 @@ const HUD_NAME: Rect = { x: 3, y: 3, w: 159, h: 21 };
 const HUD_SCORE: Rect = { x: 220, y: 3, w: 78, h: 21 };
 const HUD_LIVES: Rect = { x: 302, y: 3, w: 208, h: 21 };
 const HUD_PAPER_BORDER: Rect = { x: 165, y: 2, w: 18, h: 23 };
-const HUD_TEXT_Y = 7;
+// Capitals and digits fill rows 3 to 12 of the font, so this centers them in the panels.
+const HUD_TEXT_Y = 6;
 const HUD_TEXT_INSET = 6;
 const HUD_PAPER_SPACING = 19;
 const HUD_ENERGY_ICON_X = 332;
 const HUD_BANDS_ICON_X = 370;
 const HUD_ITEM_GAP = 3;
-const HUD_ITEM_TEXT_Y = 5;
 const HUD_PANEL_CENTER_Y = 13;
 const HUD_LIVES_TEXT_RIGHT = 391;
 const HUD_LIVES_TEXT_MINIMUM = 3;
@@ -471,7 +485,7 @@ function drawMovingHazard(ctx: CanvasRenderingContext2D, art: Art, o: RoomObject
   } else if (o.type === OBJECT.kettle) {
     ctx.fillStyle = "rgba(240, 240, 240, 0.8)";
     ctx.beginPath();
-    ctx.ellipse(hazard.x + 22, hazard.y + 13, 22, 11, 0, 0, Math.PI * 2);
+    ctx.ellipse(hazard.x + STEAM_CLOUD_X, hazard.y + STEAM_CLOUD_Y, 24, 11, 0, 0, Math.PI * 2);
     ctx.fill();
   }
 }
@@ -612,7 +626,20 @@ function drawDarkness(ctx: CanvasRenderingContext2D, room: Room, time: number): 
 }
 
 function planeFrame(s: GameState): Rect {
+  if (s.turnTime > 0) {
+    const turned = 1 - s.turnTime / TURN_DURATION_SECONDS;
+    const step = Math.min(PLANE_TURN.length - 1, Math.floor(turned * PLANE_TURN.length));
+    return PLANE_TURN[s.facing < 0 ? step : PLANE_TURN.length - 1 - step];
+  }
+  if (s.facing < 0) return s.vx > 0 ? PLANE_LEFT_TILTED_BACK : PLANE_LEFT;
   return s.vx < 0 ? PLANE_TILTED_BACK : PLANE_FORWARD;
+}
+
+/** The one thing that stays lit in a dark room, so the way out of the dark can be found. */
+function drawLightSwitches(ctx: CanvasRenderingContext2D, art: Art, room: Room): void {
+  for (const o of room.objects) {
+    if (o.type === OBJECT.lightSwitch) drawOnRect(ctx, art, OBJECT_SPRITES[o.type], o);
+  }
 }
 
 function isPlaneVisible(s: GameState): boolean {
@@ -729,7 +756,7 @@ function drawRoomNumber(ctx: CanvasRenderingContext2D, art: Art, roomNumber: num
 /** A count sitting right up against its icon, both centered in the scoreboard panel. */
 function drawHudItem(ctx: CanvasRenderingContext2D, art: Art, count: string, color: string, icon: Rect, iconX: number): void {
   const textX = iconX - HUD_ITEM_GAP - art.font.measure(count);
-  art.font.draw(ctx, count, textX, HUD_ITEM_TEXT_Y, color);
+  art.font.draw(ctx, count, textX, HUD_TEXT_Y, color);
   drawSprite(ctx, art, icon, iconX, HUD_PANEL_CENTER_Y - Math.floor(icon.h / 2));
 }
 
@@ -816,7 +843,10 @@ export function render(
   drawAir(ctx, art, room, s);
   drawEnemies(ctx, art, s);
   drawPlaneShadow(ctx, s);
-  if (isRoomDark(s, room)) drawDarkness(ctx, room, s.time);
+  if (isRoomDark(s, room)) {
+    drawDarkness(ctx, room, s.time);
+    drawLightSwitches(ctx, art, room);
+  }
   drawPlane(ctx, art, s);
   drawShredding(ctx, art, s);
   drawPopups(ctx, art, s);

@@ -26,7 +26,7 @@ STAIRS_UP, STAIRS_DOWN = 5, 6
 TITLE_SCENE = 28
 SOUND_TYPE = 0xF009
 # Room backPictID -> bitmap resource. Matched by room names and screenshots of the original.
-BACKGROUNDS = {200: 7, 201: 8, 202: 30, 203: 9, 204: 31, 205: 10, 206: 31, 207: 32, 208: 33, 209: 34}
+BACKGROUNDS = {200: 7, 201: 8, 202: 30, 203: 9, 204: 31, 205: 10, 206: 32, 207: 29, 208: 33, 209: 34}
 HOUSE_FILES = ["HOUSE.GHS", "HOUSE2.GHS"]
 # Objects whose amount (or extra, for ducts) names a room in their own house file.
 ROOM_LINK_TYPES = {5, 44, 45}
@@ -174,7 +174,8 @@ def read_house(path, first_room):
         enemy_kind, enemy_count = struct.unpack_from(">HH", r, 48)
         condition = struct.unpack_from(">H", r, 56)[0]
         rooms.append({
-            "name": r[1:1 + r[0]].decode("mac_roman"),
+            # The Windows bitmap font has no single ellipsis character, so spell it out.
+            "name": r[1:1 + r[0]].decode("mac_roman").replace("\u2026", "..."),
             "backPict": back,
             "tiles": list(struct.unpack_from(">8H", r, 30)),
             "leftOpen": r[46] != 0,

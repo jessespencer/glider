@@ -8,6 +8,7 @@ export interface MenuActions {
   newGame(): void;
   goToRoom(roomIndex: number): void;
   toggleSound(): boolean;
+  toggleBassBeat(): boolean;
   toggleFullscreen(): void;
 }
 
@@ -125,9 +126,13 @@ export function createMenu(rooms: Room[], sprites: HTMLImageElement, actions: Me
     soundItem.textContent = actions.toggleSound() ? "Sound: on" : "Sound: off";
   });
 
+  const bassBeatItem = menuItem("Bass Beat: off", () => {
+    bassBeatItem.textContent = actions.toggleBassBeat() ? "Bass Beat: on" : "Bass Beat: off";
+  });
+
   addMenu("Game", [menuItem("New Game", actions.newGame)]);
   addMenu("Rooms", roomItems, "rooms");
-  addMenu("Options", [soundItem, menuItem("Fullscreen", actions.toggleFullscreen)]);
+  addMenu("Options", [soundItem, bassBeatItem, menuItem("Fullscreen", actions.toggleFullscreen)]);
 
   window.addEventListener("click", closeAll);
 

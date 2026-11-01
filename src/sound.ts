@@ -1,32 +1,46 @@
 import type { SoundEvent } from "./sim";
 
 const SOUND_COUNT = 31;
+const BASS_BEAT_SOUND = 30;
 
 // Confirmed by ear: crash, clock, battery, drip, guitar, startup, level, tick, shred, steam,
-// powerSwitch, zap, grease. The rest are matched by length and character; open ?sounds to audition them.
+// powerSwitch, zap, grease, ball, mirror, fan, toastDown, fire, balloonPop, boost, pop, bonus,
+// win, burn, thunder, timeBonus, toastUp. The rest are matched by length and character; open
+// ?sounds to audition them.
 const SOUND_FOR_EVENT: Record<SoundEvent, number> = {
   clock: 5,
-  paper: 16,
+  paper: 13,
   bonus: 13,
+  timeBonus: 28,
   battery: 9,
-  bands: 8,
+  boost: 26,
+  bands: 9,
   crash: 1,
-  switch: 19,
+  switch: 23,
   powerSwitch: 18,
+  fan: 3,
   shred: 20,
   steam: 25,
   grease: 14,
+  burn: 8,
+  toastUp: 27,
+  toastDown: 22,
+  ball: 4,
   thunder: 17,
-  fire: 4,
-  pop: 23,
+  fire: 11,
+  pop: 6,
+  balloonPop: 19,
   travel: 12,
+  stairsUp: 12,
+  stairsDown: 10,
+  mirror: 16,
   zap: 24,
   drip: 7,
   guitar: 15,
   startup: 2,
   level: 29,
   tick: 21,
-  win: 29,
+  win: 16,
 };
 
 function soundUrl(id: number): string {
@@ -39,6 +53,8 @@ export interface Sounds {
   play(event: SoundEvent): void;
   /** Flips sound on or off and returns whether it's now on. */
   toggle(): boolean;
+  /** Flips the looping bass beat on or off and returns whether it's now on. */
+  toggleBassBeat(): boolean;
 }
 
 export function createSounds(): Sounds {
@@ -46,6 +62,20 @@ export function createSounds(): Sounds {
   const buffers = new Map<number, AudioBuffer>();
   let levelSound: AudioBufferSourceNode | null = null;
   let enabled = true;
+  let bassBeatWanted = false;
+  let bassBeat: AudioBufferSourceNode | null = null;
+
+  const updateBassBeat = (): void => {
+    bassBeat?.stop();
+    bassBeat = null;
+    const buffer = buffers.get(BASS_BEAT_SOUND);
+    if (!buffer || !enabled || !bassBeatWanted) return;
+    bassBeat = context.createBufferSource();
+    bassBeat.buffer = buffer;
+    bassBeat.loop = true;
+    bassBeat.connect(context.destination);
+    bassBeat.start();
+  };
 
   const start = (event: SoundEvent): AudioBufferSourceNode | null => {
     const buffer = buffers.get(SOUND_FOR_EVENT[event]);
@@ -63,7 +93,7 @@ export function createSounds(): Sounds {
     levelSound = start("level");
   };
 
-  for (const id of new Set(Object.values(SOUND_FOR_EVENT))) {
+  for (const id of new Set([...Object.values(SOUND_FOR_EVENT), BASS_BEAT_SOUND])) {
     void fetch(soundUrl(id))
       .then((response) => response.arrayBuffer())
       .then((data) => context.decodeAudioData(data))
@@ -76,7 +106,13 @@ export function createSounds(): Sounds {
     },
     toggle() {
       enabled = !enabled;
+      updateBassBeat();
       return enabled;
+    },
+    toggleBassBeat() {
+      bassBeatWanted = !bassBeatWanted;
+      updateBassBeat();
+      return bassBeatWanted;
     },
     play(event) {
       if (!enabled) return;

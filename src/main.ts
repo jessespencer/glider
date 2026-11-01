@@ -117,6 +117,10 @@ async function start(): Promise<void> {
       beginFlight(game);
     },
     toggleSound: () => sounds.toggle(),
+    toggleBassBeat() {
+      sounds.unlock();
+      return sounds.toggleBassBeat();
+    },
     toggleFullscreen,
   });
 

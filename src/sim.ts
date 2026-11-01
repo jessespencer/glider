@@ -4,6 +4,7 @@ export const ROOM_W = 512;
 export const ROOM_H = 342;
 export const PLANE_W = 44;
 export const PLANE_H = 16;
+export const TURN_DURATION_SECONDS = 0.3;
 
 export const OBJECT = {
   table: 1,
@@ -55,12 +56,23 @@ const DOWNDRAFT_RESPONSE = 11;
 const MAX_SPEED = 150;
 const TURBO_SPEED = 430;
 const TURBO_DRAIN_PER_SECOND = 30;
+const BOOST_SOUND_SECONDS = 0.05;
 const ACCEL = 2400;
 const BRAKE = 3000;
 const CEILING_BOUNCE = 105;
 const COLUMN_REACH = 17;
 const CEILING_AIR_TOP = 44;
-const FAN_PUSH = 110;
+const FURNITURE_REACH = 8;
+const FAN_SPEED = 340;
+const FAN_RESPONSE = 12;
+const FAN_CARRY_DECAY = 260;
+const FAN_FLOAT_SPEED = 12;
+const STEAM_DIRECTION = -1;
+const STEAM_LIFT_SPEED = 300;
+const STEAM_PUSH_SPEED = 220;
+const STEAM_THROW_SECONDS = 0.5;
+const STEAM_REACH_X = 56;
+const STEAM_REACH_Y = 24;
 /** The band of moving air, measured down from the top of the fan. */
 export const FAN_STREAM_TOP = 10;
 export const FAN_STREAM_H = 16;
@@ -80,14 +92,17 @@ const STRINGS_TOP_X = 47;
 const STRINGS_BOTTOM_X = 30;
 const STRINGS_REACH = 8;
 const RESPAWN_SEARCH_STEP = 8;
+const RESPAWN_RIGHT_X = ROOM_W - START_X - PLANE_W;
 const RESPAWN_CLEAR_Y = 130;
 const RESPAWN_VENT_TOP = 60;
 const STAIR_SIDE_INSET = 40;
 const STAIR_UP_Y = 50;
 const STAIR_UP_Y_WITHOUT_VENT = 104;
 const STAIR_DOWN_Y = 322;
-const STAIR_ARRIVAL_UP = 200;
-const STAIR_ARRIVAL_DOWN = 170;
+const STAIR_ARRIVAL_BOTTOM = 300;
+const STAIR_ARRIVAL_TOP = -PLANE_H;
+const STAIR_RISE_TO_Y = 150;
+const STAIR_COOLDOWN_SECONDS = 2.2;
 const DUCT_REACH_Y = 14;
 
 /** Matches the length of the original's startup sound. */
@@ -109,6 +124,12 @@ const TIME_RESULT_SECONDS = 1.6;
 
 const BUZZ_SECONDS = 0.17;
 const GREASE_SPREAD_SPEED = 120;
+const GREASE_SURFACE_RAISE = 2;
+const GREASE_LANDING_DEPTH = 14;
+const GREASE_ACCEL = 500;
+const GREASE_BRAKE = 70;
+const HAZARD_OFFSET_SECONDS = 0.7;
+const BALL_BOUNCE_SECONDS = 2;
 const DRIP_FALL_SECONDS = 0.4;
 const DRIP_MIN_PERIOD_SECONDS = 1.2;
 const LIGHTNING_PERIOD_SECONDS = 7;
@@ -154,18 +175,29 @@ export type SoundEvent =
   | "clock"
   | "paper"
   | "bonus"
+  | "timeBonus"
   | "battery"
   | "bands"
   | "crash"
   | "switch"
   | "powerSwitch"
+  | "fan"
   | "shred"
   | "steam"
   | "grease"
+  | "burn"
+  | "toastUp"
+  | "toastDown"
+  | "ball"
   | "thunder"
   | "fire"
   | "pop"
+  | "balloonPop"
+  | "boost"
   | "travel"
+  | "stairsUp"
+  | "stairsDown"
+  | "mirror"
   | "zap"
   | "drip"
   | "guitar"
@@ -232,6 +264,16 @@ export interface GameState {
   y: number;
   vx: number;
   vy: number;
+  /** Speed left over from a fan, added on top of steering. */
+  windVx: number;
+  /** The plane faces right unless wind has turned it around. */
+  facing: 1 | -1;
+  /** Time left in the rotation animation. */
+  turnTime: number;
+  /** Being carried up from the bottom of a room after taking stairs up. */
+  risingFromStairs: boolean;
+  /** Time left being thrown by a kettle's blast, which carries on after leaving the steam. */
+  steamThrow: number;
   score: number;
   /** What the scoreboard shows; it counts up to `score`. */
   shownScore: number;
@@ -243,6 +285,8 @@ export interface GameState {
   lives: number;
   energy: number;
   boosting: boolean;
+  /** On spilled grease, where the plane rides the surface and barely stops. */
+  sliding: boolean;
   bands: number;
   collected: Set<string>;
   /** When each knocked-over grease jar went down, so its spill can spread from that moment. */
@@ -250,6 +294,10 @@ export interface GameState {
   flipped: Set<string>;
   lightsOn: Set<number>;
   airOn: Set<number>;
+  /** Which side the plane came into this room from. */
+  enteredOnRight: boolean;
+  /** Whether it has caught a vent on the far side, which moves its restart point over there. */
+  reachedFarSide: boolean;
   /** Only the very first game opens with the plane fading in. */
   opensWithFade: boolean;
   enemies: Enemy[];
@@ -312,7 +360,11 @@ function scoreRoomTime(s: GameState, room: Room): void {
   const points = made ? Math.max(TIME_BONUS_MINIMUM, earned) : 0;
   s.score += points;
   s.timeResult = { made, points, age: 0 };
-  if (made) s.sounds.push("bonus");
+  if (made) s.sounds.push("timeBonus");
+}
+
+function isOnRightHalf(x: number): boolean {
+  return x + PLANE_W / 2 >= ROOM_W / 2;
 }
 
 /** Moves to a room as play continues, unlike a crash reload, which stays quiet. */
@@ -321,6 +373,8 @@ function changeRoom(s: GameState, house: Room[], roomIndex: number, x: number, y
     scoreRoomTime(s, house[s.roomIndex]);
     s.roomClock = 0;
     s.sounds.push("level");
+    s.enteredOnRight = isOnRightHalf(x);
+    s.reachedFarSide = false;
   }
   enterRoom(s, house, roomIndex, x, y);
 }
@@ -333,6 +387,11 @@ export function createGame(house: Room[], roomIndex = 0, opensWithFade = false):
     y: START_Y,
     vx: 0,
     vy: 0,
+    windVx: 0,
+    facing: 1,
+    turnTime: 0,
+    risingFromStairs: false,
+    steamThrow: 0,
     score: 0,
     shownScore: 0,
     popups: [],
@@ -342,12 +401,15 @@ export function createGame(house: Room[], roomIndex = 0, opensWithFade = false):
     lives: START_LIVES,
     energy: 0,
     boosting: false,
+    sliding: false,
     bands: 0,
     collected: new Set(),
     greaseTipTimes: new Map(),
     flipped: new Set(),
     lightsOn: new Set(),
     airOn: new Set(),
+    enteredOnRight: false,
+    reachedFarSide: false,
     opensWithFade,
     enemies: [],
     shots: [],
@@ -427,10 +489,10 @@ const TICKS_PER_SECOND = 30;
  * object so two toasters in a room don't fire in step.
  */
 export function movingHazard(o: RoomObject, objectIndex: number, time: number): Rect | null {
-  const offset = objectIndex * 0.7;
+  const offset = objectIndex * HAZARD_OFFSET_SECONDS;
   if (o.type === OBJECT.ball) {
     const height = o.y - o.amount;
-    const bounce = Math.abs(Math.sin(((time + offset) * Math.PI) / 2));
+    const bounce = Math.abs(Math.sin(((time + offset) * Math.PI) / BALL_BOUNCE_SECONDS));
     return { x: o.x, y: o.y - height * bounce, w: o.w, h: o.h };
   }
   if (o.type === OBJECT.toaster || o.type === OBJECT.fishbowl) {
@@ -452,7 +514,7 @@ export function movingHazard(o: RoomObject, objectIndex: number, time: number): 
   if (o.type === OBJECT.kettle) {
     const progress = burst(time, 1 + o.amount / TICKS_PER_SECOND, 1, offset);
     if (progress === null) return null;
-    return { x: o.x - 44, y: o.y - 10, w: 44, h: 26 };
+    return { x: o.x - STEAM_REACH_X, y: o.y - STEAM_REACH_Y, w: STEAM_REACH_X + o.w, h: STEAM_REACH_Y + o.h };
   }
   return null;
 }
@@ -502,18 +564,71 @@ function verticalAir(s: GameState, room: Room): { rising: boolean; limit: number
   return null;
 }
 
-function fanPush(s: GameState, room: Room): number {
-  let push = 0;
+/** Which way a running fan is blowing the plane: -1 left, 1 right, or 0 outside any stream. */
+/** Whether furniture sits right above the plane, so rising air slams it in instead of bouncing. */
+function isUnderFurniture(s: GameState, room: Room): boolean {
+  return room.objects.some((o) => {
+    if (!SOLID_TYPES.includes(o.type)) return false;
+    const overlapsSideways = s.x + HIT_INSET_X < o.x + o.w && s.x + PLANE_W - HIT_INSET_X > o.x;
+    const gap = s.y - (o.y + o.h);
+    return overlapsSideways && gap >= -PLANE_H && gap <= FURNITURE_REACH;
+  });
+}
+
+/** The height of any spilled grease right under the plane, which it can land and slide on. */
+function greaseSurfaceBelow(s: GameState, room: Room): number | null {
+  const planeBottom = s.y + PLANE_H - HIT_INSET_Y;
+  for (const [index, o] of room.objects.entries()) {
+    if (o.type !== OBJECT.grease) continue;
+    const spillX = greaseSpillX(s, o, index);
+    if (spillX === null) continue;
+    const surface = o.y + o.h - GREASE_SURFACE_RAISE;
+    // Any part of the plane still on the spill holds it up, so it can roll cleanly off an edge.
+    const overSpill =
+      s.x + PLANE_W - HIT_INSET_X > Math.min(o.x, spillX) && s.x + HIT_INSET_X < Math.max(o.x + o.w, spillX);
+    if (overSpill && planeBottom >= surface && planeBottom <= surface + GREASE_LANDING_DEPTH) return surface;
+  }
+  return null;
+}
+
+function isInSteam(s: GameState, room: Room): boolean {
+  return room.objects.some((o, index) => {
+    if (o.type !== OBJECT.kettle) return false;
+    const steam = movingHazard(o, index, s.time);
+    return steam !== null && overlaps(s, steam);
+  });
+}
+
+function fanWind(s: GameState, room: Room): number {
+  let wind = 0;
   room.objects.forEach((o, index) => {
     if ((o.type !== OBJECT.fanLeft && o.type !== OBJECT.fanRight) || !isObjectOn(s, o, index)) return;
     const centerY = s.y + PLANE_H / 2;
     const streamY = o.y + FAN_STREAM_TOP;
     if (centerY < streamY - FAN_STREAM_MARGIN || centerY > streamY + FAN_STREAM_H + FAN_STREAM_MARGIN) return;
     const centerX = s.x + PLANE_W / 2;
-    if (o.type === OBJECT.fanRight && centerX >= o.x && centerX <= o.amount) push += FAN_PUSH;
-    if (o.type === OBJECT.fanLeft && centerX <= o.x + o.w && centerX >= o.amount) push -= FAN_PUSH;
+    if (o.type === OBJECT.fanRight && centerX >= o.x && centerX <= o.amount) wind = 1;
+    if (o.type === OBJECT.fanLeft && centerX <= o.x + o.w && centerX >= o.amount) wind = -1;
   });
-  return push;
+  return wind;
+}
+
+function turnTo(s: GameState, facing: 1 | -1): void {
+  if (s.facing === facing) return;
+  s.facing = facing;
+  s.turnTime = TURN_DURATION_SECONDS;
+}
+
+/** Wind shoves the plane and spins it to face downwind; the shove then carries it onward. */
+function applyWind(s: GameState, wind: number, speed: number, dt: number): void {
+  s.turnTime = Math.max(0, s.turnTime - dt);
+  if (wind !== 0) {
+    s.windVx += (wind * speed - s.windVx) * Math.min(1, FAN_RESPONSE * dt);
+    turnTo(s, wind > 0 ? 1 : -1);
+    return;
+  }
+  s.windVx = Math.sign(s.windVx) * Math.max(0, Math.abs(s.windVx) - FAN_CARRY_DECAY * dt);
+  if (s.windVx === 0) turnTo(s, 1);
 }
 
 function steer(s: GameState, input: Input, dt: number): void {
@@ -521,23 +636,29 @@ function steer(s: GameState, input: Input, dt: number): void {
   if (s.boosting) {
     // Enter alone is enough: the plane shoots forward unless it's being held back.
     s.energy = Math.max(0, s.energy - TURBO_DRAIN_PER_SECOND * dt);
+    if (Math.floor(s.time / BOOST_SOUND_SECONDS) !== Math.floor((s.time - dt) / BOOST_SOUND_SECONDS)) {
+      s.sounds.push("boost");
+    }
     const direction = input.left ? -1 : 1;
     s.vx = Math.max(-TURBO_SPEED, Math.min(TURBO_SPEED, s.vx + direction * ACCEL * dt));
     return;
   }
   const direction = Number(input.right) - Number(input.left);
+  const brake = s.sliding ? GREASE_BRAKE : BRAKE;
   if (direction !== 0) {
-    const limit = Math.max(MAX_SPEED, Math.abs(s.vx) - BRAKE * dt);
-    s.vx = Math.max(-limit, Math.min(limit, s.vx + direction * ACCEL * dt));
+    const limit = Math.max(MAX_SPEED, Math.abs(s.vx) - brake * dt);
+    const accel = s.sliding ? GREASE_ACCEL : ACCEL;
+    s.vx = Math.max(-limit, Math.min(limit, s.vx + direction * accel * dt));
     return;
   }
-  const slowed = Math.max(0, Math.abs(s.vx) - BRAKE * dt);
+  const slowed = Math.max(0, Math.abs(s.vx) - brake * dt);
   s.vx = Math.sign(s.vx) * slowed;
 }
 
 function startCrash(s: GameState, sound: SoundEvent = "crash"): void {
   s.phase = "crashing";
   s.boosting = false;
+  s.sliding = false;
   s.crashTime = 0;
   s.sounds.push(sound);
 }
@@ -550,7 +671,6 @@ const SOLID_TYPES: number[] = [
   OBJECT.computer,
   OBJECT.toaster,
   OBJECT.fishbowl,
-  OBJECT.kettle,
   OBJECT.wastebasket,
 ];
 const VERTICAL_DANGER_TYPES: number[] = [OBJECT.ball, OBJECT.toaster, OBJECT.fishbowl, OBJECT.drip, OBJECT.shredder];
@@ -564,14 +684,17 @@ function isSafeAtTop(room: Room, x: number): boolean {
     const overColumn = left < o.x + o.w && right > o.x;
     if (!overColumn) return true;
     if (SOLID_TYPES.includes(o.type)) return o.y > RESPAWN_CLEAR_Y;
-    if (VERTICAL_DANGER_TYPES.includes(o.type) || o.type === OBJECT.ventDown) return false;
+    if (VERTICAL_DANGER_TYPES.includes(o.type) || o.type === OBJECT.ventDown || o.type === OBJECT.portal) return false;
     if (o.type === OBJECT.duct) return center < o.x || center > o.x + o.w;
     if (o.type === OBJECT.stairsUp) return center <= o.x + STAIR_SIDE_INSET || center >= o.x + o.w - STAIR_SIDE_INSET;
     return true;
   });
 }
 
-/** Picks the safest spot along the ceiling: over a full-height vent, else the nearest open air. */
+/**
+ * Picks a spot along the ceiling on the half of the room the plane died in: over a full-height
+ * vent if there is one, else open air. It only crosses over if that half has no safe spot at all.
+ */
 function respawnX(room: Room, preferredX: number): number {
   const closest = (spots: number[]): number | undefined =>
     spots.sort((a, b) => Math.abs(a - preferredX) - Math.abs(b - preferredX))[0];
@@ -583,7 +706,14 @@ function respawnX(room: Room, preferredX: number): number {
   for (let x = MIN_X; x < MAX_X; x += RESPAWN_SEARCH_STEP) {
     if (isSafeAtTop(room, x)) openSpots.push(x);
   }
-  return closest(ventSpots) ?? closest(openSpots) ?? START_X;
+  const onPreferredHalf = (x: number): boolean => x + PLANE_W / 2 >= ROOM_W / 2 === preferredX + PLANE_W / 2 >= ROOM_W / 2;
+  return (
+    closest(ventSpots.filter(onPreferredHalf)) ??
+    closest(openSpots.filter(onPreferredHalf)) ??
+    closest(ventSpots) ??
+    closest(openSpots) ??
+    START_X
+  );
 }
 
 function startShredding(s: GameState, shredder: RoomObject): void {
@@ -601,18 +731,25 @@ function respawn(s: GameState, house: Room[]): void {
     return;
   }
   // The room reloads the way the player entered it, so its items and their points come back,
-  // but the plane always restarts along the ceiling.
-  const { x, score, energy, bands, collected } = s.entry;
+  // but the plane restarts along the ceiling, on the side it last made it to.
+  const { score, energy, bands, collected } = s.entry;
+  const restartOnRight = s.reachedFarSide ? !s.enteredOnRight : s.enteredOnRight;
+  const preferredX = restartOnRight ? RESPAWN_RIGHT_X : START_X;
   s.phase = "flying";
   s.vx = 0;
   s.vy = 0;
+  s.windVx = 0;
+  s.facing = 1;
+  s.turnTime = 0;
+  s.steamThrow = 0;
+  s.risingFromStairs = false;
   s.score = score;
   s.shownScore = Math.min(s.shownScore, score);
   s.energy = energy;
   s.bands = bands;
   s.collected = new Set(collected);
   s.linkCooldown = LINK_COOLDOWN_SECONDS;
-  enterRoom(s, house, s.roomIndex, respawnX(house[s.roomIndex], x), START_Y);
+  enterRoom(s, house, s.roomIndex, respawnX(house[s.roomIndex], preferredX), START_Y);
 }
 
 function takeItem(s: GameState, o: RoomObject, index: number): void {
@@ -636,24 +773,35 @@ function pressSwitch(s: GameState, room: Room, o: RoomObject): void {
     if (s.lightsOn.has(s.roomIndex)) s.lightsOn.delete(s.roomIndex);
     else s.lightsOn.add(s.roomIndex);
   } else if (o.type === OBJECT.thermostat) {
-    if (s.airOn.has(s.roomIndex)) s.airOn.delete(s.roomIndex);
-    else s.airOn.add(s.roomIndex);
+    if (s.airOn.has(s.roomIndex)) {
+      s.airOn.delete(s.roomIndex);
+    } else {
+      s.airOn.add(s.roomIndex);
+      s.sounds.push("fan");
+      return;
+    }
   } else {
     // A power switch's amount is the 1-based position of the object it controls in the room.
-    const key = objectKey(s.roomIndex, o.amount - 1);
-    if (room.objects[o.amount - 1]) {
+    const controlled = room.objects[o.amount - 1];
+    if (controlled) {
+      const key = objectKey(s.roomIndex, o.amount - 1);
       if (s.flipped.has(key)) s.flipped.delete(key);
       else s.flipped.add(key);
+      const isFan = controlled.type === OBJECT.fanLeft || controlled.type === OBJECT.fanRight;
+      if (isFan && isObjectOn(s, controlled, o.amount - 1)) {
+        s.sounds.push("fan");
+        return;
+      }
     }
   }
   s.sounds.push(o.type === OBJECT.powerSwitch ? "powerSwitch" : "switch");
 }
 
-function travel(s: GameState, house: Room[], roomIndex: number, x: number, y: number): void {
+function travel(s: GameState, house: Room[], roomIndex: number, x: number, y: number, sound: SoundEvent = "travel"): void {
   s.linkCooldown = LINK_COOLDOWN_SECONDS;
   s.vx = 0;
   s.vy = 0;
-  s.sounds.push("travel");
+  s.sounds.push(sound);
   changeRoom(s, house, roomIndex, x, y);
 }
 
@@ -662,8 +810,11 @@ function takeStairs(s: GameState, house: Room[], o: RoomObject): void {
   const destination = house[o.target];
   const arrival = destination.objects.find((other) => other.type === arrivalType && other.target === s.roomIndex);
   const x = arrival ? arrival.x + arrival.w / 2 - PLANE_W / 2 : START_X;
-  const y = o.type === OBJECT.stairsUp ? STAIR_ARRIVAL_UP : STAIR_ARRIVAL_DOWN;
-  travel(s, house, o.target, x, y);
+  const goingUp = o.type === OBJECT.stairsUp;
+  travel(s, house, o.target, x, goingUp ? STAIR_ARRIVAL_BOTTOM : STAIR_ARRIVAL_TOP, goingUp ? "stairsUp" : "stairsDown");
+  s.linkCooldown = STAIR_COOLDOWN_SECONDS;
+  s.risingFromStairs = goingUp;
+  s.vy = goingUp ? -LIFT_SPEED : FALL_SPEED;
 }
 
 function takeDuct(s: GameState, house: Room[], o: RoomObject): void {
@@ -705,7 +856,7 @@ function checkLinks(s: GameState, house: Room[], room: Room): boolean {
         s.phase = "won";
         s.sounds.push("win");
       } else {
-        travel(s, house, o.target, START_X, START_Y);
+        travel(s, house, o.target, START_X, START_Y, "mirror");
       }
       return true;
     }
@@ -725,7 +876,8 @@ function checkObjects(s: GameState, room: Room): void {
   room.objects.forEach((o, index) => {
     if (s.phase !== "flying") return;
     const moving = movingHazard(o, index, s.time);
-    if (moving && overlaps(s, moving)) {
+    // A kettle's blast only throws the plane around; it's whatever that hits that does the damage.
+    if (moving && o.type !== OBJECT.kettle && overlaps(s, moving)) {
       startCrash(s);
       return;
     }
@@ -740,7 +892,7 @@ function checkObjects(s: GameState, room: Room): void {
         if (isObjectOn(s, o, index)) startShredding(s, o);
         break;
       case OBJECT.candle:
-        if (overlaps(s, candleFlame(o))) startCrash(s);
+        if (overlaps(s, candleFlame(o))) startCrash(s, "burn");
         break;
       case OBJECT.clock:
       case OBJECT.paper:
@@ -811,7 +963,7 @@ function moveShots(s: GameState, dt: number): void {
       if (e.alive && shot.x > r.x && shot.x < r.x + r.w && shot.y > r.y && shot.y < r.y + r.h) {
         e.alive = false;
         shot.x = ROOM_W * 2;
-        s.sounds.push("pop");
+        s.sounds.push(e.kind === ENEMY_BALLOON ? "balloonPop" : "pop");
         if (e.kind === ENEMY_DART) {
           s.score += DART_POINTS;
           s.popups.push({ amount: DART_POINTS, x: r.x + r.w / 2, y: r.y, age: 0 });
@@ -833,15 +985,28 @@ function fireBand(s: GameState, input: Input): void {
 
 function soundBursts(s: GameState, room: Room, dt: number): void {
   room.objects.forEach((o, index) => {
+    if (o.type === OBJECT.ball) {
+      const offset = index * HAZARD_OFFSET_SECONDS;
+      const landed = Math.floor((s.time + offset) / BALL_BOUNCE_SECONDS);
+      if (landed !== Math.floor((s.time - dt + offset) / BALL_BOUNCE_SECONDS)) s.sounds.push("ball");
+      return;
+    }
     if (o.type === OBJECT.outlet) {
       // The buzz clip is short, so it repeats for as long as the sparks last.
       const newBuzz = Math.floor(s.time / BUZZ_SECONDS) !== Math.floor((s.time - dt) / BUZZ_SECONDS);
       if (newBuzz && movingHazard(o, index, s.time)) s.sounds.push("zap");
       return;
     }
-    if (o.type !== OBJECT.drip && o.type !== OBJECT.kettle) return;
+    if (o.type === OBJECT.toaster) {
+      const out = movingHazard(o, index, s.time) !== null;
+      const wasOut = movingHazard(o, index, s.time - dt) !== null;
+      if (out && !wasOut) s.sounds.push("toastUp");
+      if (wasOut && !out) s.sounds.push("toastDown");
+      return;
+    }
+    if (o.type !== OBJECT.drip && o.type !== OBJECT.kettle && o.type !== OBJECT.fishbowl) return;
     if (!movingHazard(o, index, s.time) || movingHazard(o, index, s.time - dt)) return;
-    s.sounds.push(o.type === OBJECT.drip ? "drip" : "steam");
+    s.sounds.push(o.type === OBJECT.kettle ? "steam" : "drip");
   });
   const hasWindow = room.objects.some((o) => o.type === OBJECT.window);
   if (hasWindow && lightningProgress(s.time) !== null && lightningProgress(s.time - dt) === null) {
@@ -879,19 +1044,44 @@ function fly(s: GameState, house: Room[], input: Input, dt: number): void {
   fireBand(s, input);
 
   const air = isAirOff(s, room) ? null : verticalAir(s, room);
-  let targetVy = FALL_SPEED;
-  if (air?.rising && s.y > air.limit) targetVy = -LIFT_SPEED;
+  const blockedAbove = air?.rising === true && isUnderFurniture(s, room);
+  // Catching a vent across the room is the checkpoint: falling over there doesn't count.
+  if (air?.rising && isOnRightHalf(s.x) !== s.enteredOnRight) s.reachedFarSide = true;
+  if (isInSteam(s, room)) s.steamThrow = STEAM_THROW_SECONDS;
+  const steamed = s.steamThrow > 0;
+  s.steamThrow = Math.max(0, s.steamThrow - dt);
+  const wind = steamed ? STEAM_DIRECTION : fanWind(s, room);
+  applyWind(s, wind, steamed ? STEAM_PUSH_SPEED : FAN_SPEED, dt);
+  let targetVy = wind !== 0 ? FAN_FLOAT_SPEED : FALL_SPEED;
+  if (air?.rising && (s.y > air.limit || blockedAbove)) targetVy = -LIFT_SPEED;
   if (air && !air.rising) targetVy = DOWNDRAFT_SPEED;
-  const response = air && !air.rising ? DOWNDRAFT_RESPONSE : LIFT_RESPONSE;
+  if (s.risingFromStairs) {
+    targetVy = -LIFT_SPEED;
+    if (s.y <= STAIR_RISE_TO_Y) s.risingFromStairs = false;
+  }
+  if (steamed) targetVy = -STEAM_LIFT_SPEED;
+  const response = steamed || (air && !air.rising) ? DOWNDRAFT_RESPONSE : LIFT_RESPONSE;
   s.vy += (targetVy - s.vy) * Math.min(1, response * dt);
 
-  s.x += (s.vx + fanPush(s, room)) * dt;
+  s.x += (s.vx + s.windVx) * dt;
   s.y += s.vy * dt;
 
   // Rising air slams the plane into the ceiling, so it bounces off and gets pushed back up.
-  if (air?.rising && s.y <= air.limit && s.vy < 0) {
+  if (air?.rising && s.y <= air.limit && s.vy < 0 && !blockedAbove) {
     s.y = air.limit;
     s.vy = CEILING_BOUNCE;
+  }
+
+  const greaseSurface = s.vy >= 0 ? greaseSurfaceBelow(s, room) : null;
+  if (s.sliding && greaseSurface === null) {
+    // Skidding off the edge keeps the slide's speed, coasting out over the drop.
+    s.windVx += s.vx;
+    s.vx = 0;
+  }
+  s.sliding = greaseSurface !== null;
+  if (greaseSurface !== null) {
+    s.y = greaseSurface - PLANE_H + HIT_INSET_Y;
+    s.vy = 0;
   }
 
   if (changeRoomAtEdges(s, house, room)) return;
