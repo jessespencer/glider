@@ -433,7 +433,8 @@ function drawHud(ctx: CanvasRenderingContext2D, art: Art, s: GameState, room: Ro
   }
   const icons = Math.min(HUD_MAX_ICONS, Math.max(0, s.lives - 1));
   for (let i = 0; i < icons; i++) {
-    drawSprite(ctx, art, PLANE_ICON, HUD_ICON_X + i * HUD_ICON_SPACING, HUD_ICON_Y);
+    // Lives are lost from the left, so the remaining icons stay at the panel's right end.
+    drawSprite(ctx, art, PLANE_ICON, HUD_ICON_X + (HUD_MAX_ICONS - icons + i) * HUD_ICON_SPACING, HUD_ICON_Y);
   }
 }
 
