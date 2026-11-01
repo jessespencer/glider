@@ -47,11 +47,13 @@ export const ENEMY_DART = 0;
 export const ENEMY_COPTER = 1;
 export const ENEMY_BALLOON = 2;
 
-const FALL_SPEED = 52;
+const FALL_SPEED = 75;
 const LIFT_SPEED = 130;
 const LIFT_RESPONSE = 7;
+const DOWNDRAFT_SPEED = 320;
+const DOWNDRAFT_RESPONSE = 15;
 const MAX_SPEED = 150;
-const TURBO_SPEED = 300;
+const TURBO_SPEED = 430;
 const TURBO_DRAIN_PER_SECOND = 30;
 const ACCEL = 2400;
 const BRAKE = 3000;
@@ -59,6 +61,7 @@ const CEILING_BOUNCE = 170;
 const COLUMN_REACH = 17;
 const FAN_PUSH = 110;
 const SHOT_SPEED = 320;
+const DART_POINTS = 300;
 const FLOOR_Y = 334;
 const CRASH_SECONDS = 0.8;
 const START_LIVES = 4;
@@ -68,8 +71,13 @@ const MIN_X = 2;
 const MAX_X = ROOM_W - PLANE_W / 2;
 const LEFT_EXIT_X = -PLANE_W / 2;
 const LINK_COOLDOWN_SECONDS = 1.5;
+const RESPAWN_SEARCH_STEP = 8;
+const RESPAWN_CLEAR_Y = 130;
+const RESPAWN_VENT_TOP = 60;
 const STAIR_SIDE_INSET = 40;
-const STAIR_TRIGGER_DEPTH = 50;
+const STAIR_UP_Y = 50;
+const STAIR_UP_Y_WITHOUT_VENT = 104;
+const STAIR_DOWN_Y = 322;
 const STAIR_ARRIVAL_UP = 200;
 const STAIR_ARRIVAL_DOWN = 170;
 const DUCT_REACH_Y = 14;
@@ -79,6 +87,12 @@ export const FADE_IN_SECONDS = 0.8;
 
 /** How long the wrecked plane stays frozen on screen before it vanishes. */
 export const CRASH_VISIBLE_SECONDS = 0.2;
+
+const TARGET_BASE_SECONDS = 12;
+const TARGET_SECONDS_PER_ITEM = 3;
+const TIME_BONUS_PER_SECOND = 10;
+const TIME_BONUS_MINIMUM = 50;
+const TIME_RESULT_SECONDS = 1.6;
 
 const SCORE_TICKER_PER_SECOND = 400;
 const POPUP_SECONDS = 1;
@@ -157,6 +171,13 @@ export interface ScorePopup {
   age: number;
 }
 
+/** Whether the player beat a room's target time, shown briefly in the next room. */
+export interface TimeResult {
+  made: boolean;
+  points: number;
+  age: number;
+}
+
 export interface Enemy {
   kind: number;
   x: number;
@@ -190,8 +211,13 @@ export interface GameState {
   /** What the scoreboard shows; it counts up to `score`. */
   shownScore: number;
   popups: ScorePopup[];
+  timeResult: TimeResult | null;
+  /** Seconds spent flying in this room. Crashes don't reset it, so they cost time. */
+  roomClock: number;
+  timedRooms: Set<number>;
   lives: number;
   energy: number;
+  boosting: boolean;
   bands: number;
   collected: Set<string>;
   flipped: Set<string>;
@@ -240,9 +266,33 @@ function enterRoom(s: GameState, house: Room[], roomIndex: number, x: number, y:
   saveEntry(s);
 }
 
+const TIMED_ITEMS: number[] = [OBJECT.clock, OBJECT.paper, OBJECT.grease, OBJECT.battery, OBJECT.bands];
+
+function targetSeconds(room: Room): number {
+  const items = room.objects.filter((o) => TIMED_ITEMS.includes(o.type)).length;
+  return TARGET_BASE_SECONDS + items * TARGET_SECONDS_PER_ITEM;
+}
+
+/** Each room is timed once, on the first way out, so going back and forth can't farm points. */
+function scoreRoomTime(s: GameState, room: Room): void {
+  if (s.timedRooms.has(s.roomIndex)) return;
+  s.timedRooms.add(s.roomIndex);
+  const secondsLeft = targetSeconds(room) - s.roomClock;
+  const made = secondsLeft > 0;
+  const earned = Math.round(secondsLeft) * TIME_BONUS_PER_SECOND;
+  const points = made ? Math.max(TIME_BONUS_MINIMUM, earned) : 0;
+  s.score += points;
+  s.timeResult = { made, points, age: 0 };
+  if (made) s.sounds.push("bonus");
+}
+
 /** Moves to a room as play continues, unlike a crash reload, which stays quiet. */
 function changeRoom(s: GameState, house: Room[], roomIndex: number, x: number, y: number): void {
-  if (roomIndex !== s.roomIndex) s.sounds.push("level");
+  if (roomIndex !== s.roomIndex) {
+    scoreRoomTime(s, house[s.roomIndex]);
+    s.roomClock = 0;
+    s.sounds.push("level");
+  }
   enterRoom(s, house, roomIndex, x, y);
 }
 
@@ -257,8 +307,12 @@ export function createGame(house: Room[], roomIndex = 0, opensWithFade = false):
     score: 0,
     shownScore: 0,
     popups: [],
+    timeResult: null,
+    roomClock: 0,
+    timedRooms: new Set(),
     lives: START_LIVES,
     energy: 0,
+    boosting: false,
     bands: 0,
     collected: new Set(),
     flipped: new Set(),
@@ -395,11 +449,17 @@ function fanPush(s: GameState, room: Room): number {
 }
 
 function steer(s: GameState, input: Input, dt: number): void {
+  s.boosting = input.turbo && s.energy > 0;
+  if (s.boosting) {
+    // Enter alone is enough: the plane shoots forward unless it's being held back.
+    s.energy = Math.max(0, s.energy - TURBO_DRAIN_PER_SECOND * dt);
+    const direction = input.left ? -1 : 1;
+    s.vx = Math.max(-TURBO_SPEED, Math.min(TURBO_SPEED, s.vx + direction * ACCEL * dt));
+    return;
+  }
   const direction = Number(input.right) - Number(input.left);
-  const boosting = input.turbo && s.energy > 0;
-  if (boosting) s.energy = Math.max(0, s.energy - TURBO_DRAIN_PER_SECOND * dt);
-  const limit = boosting ? TURBO_SPEED : MAX_SPEED;
   if (direction !== 0) {
+    const limit = Math.max(MAX_SPEED, Math.abs(s.vx) - BRAKE * dt);
     s.vx = Math.max(-limit, Math.min(limit, s.vx + direction * ACCEL * dt));
     return;
   }
@@ -409,8 +469,54 @@ function steer(s: GameState, input: Input, dt: number): void {
 
 function startCrash(s: GameState): void {
   s.phase = "crashing";
+  s.boosting = false;
   s.crashTime = 0;
   s.sounds.push("crash");
+}
+
+const SOLID_TYPES: number[] = [
+  OBJECT.table,
+  OBJECT.shelf,
+  OBJECT.books,
+  OBJECT.cabinet,
+  OBJECT.computer,
+  OBJECT.toaster,
+  OBJECT.fishbowl,
+  OBJECT.kettle,
+  OBJECT.wastebasket,
+  OBJECT.shredder,
+];
+const VERTICAL_DANGER_TYPES: number[] = [OBJECT.ball, OBJECT.toaster, OBJECT.fishbowl, OBJECT.drip];
+
+/** Whether a plane dropped in at the top of the room here is safe and stays in this room. */
+function isSafeAtTop(room: Room, x: number): boolean {
+  const left = x + HIT_INSET_X;
+  const right = x + PLANE_W - HIT_INSET_X;
+  const center = x + PLANE_W / 2;
+  return room.objects.every((o) => {
+    const overColumn = left < o.x + o.w && right > o.x;
+    if (!overColumn) return true;
+    if (SOLID_TYPES.includes(o.type)) return o.y > RESPAWN_CLEAR_Y;
+    if (VERTICAL_DANGER_TYPES.includes(o.type) || o.type === OBJECT.ventDown) return false;
+    if (o.type === OBJECT.duct) return center < o.x || center > o.x + o.w;
+    if (o.type === OBJECT.stairsUp) return center <= o.x + STAIR_SIDE_INSET || center >= o.x + o.w - STAIR_SIDE_INSET;
+    return true;
+  });
+}
+
+/** Picks the safest spot along the ceiling: over a full-height vent, else the nearest open air. */
+function respawnX(room: Room, preferredX: number): number {
+  const closest = (spots: number[]): number | undefined =>
+    spots.sort((a, b) => Math.abs(a - preferredX) - Math.abs(b - preferredX))[0];
+  const ventSpots = room.objects
+    .filter((o) => o.type === OBJECT.ventUp && o.amount <= RESPAWN_VENT_TOP)
+    .map((o) => o.x + o.w / 2 - PLANE_W / 2)
+    .filter((x) => isSafeAtTop(room, x));
+  const openSpots: number[] = [];
+  for (let x = MIN_X; x < MAX_X; x += RESPAWN_SEARCH_STEP) {
+    if (isSafeAtTop(room, x)) openSpots.push(x);
+  }
+  return closest(ventSpots) ?? closest(openSpots) ?? START_X;
 }
 
 function respawn(s: GameState, house: Room[]): void {
@@ -419,8 +525,9 @@ function respawn(s: GameState, house: Room[]): void {
     s.phase = "gameOver";
     return;
   }
-  // The room reloads the way the player entered it, so its items and their points come back.
-  const { x, y, score, energy, bands, collected } = s.entry;
+  // The room reloads the way the player entered it, so its items and their points come back,
+  // but the plane always restarts along the ceiling.
+  const { x, score, energy, bands, collected } = s.entry;
   s.phase = "flying";
   s.vx = 0;
   s.vy = 0;
@@ -429,7 +536,8 @@ function respawn(s: GameState, house: Room[]): void {
   s.energy = energy;
   s.bands = bands;
   s.collected = new Set(collected);
-  enterRoom(s, house, s.roomIndex, x, y);
+  s.linkCooldown = LINK_COOLDOWN_SECONDS;
+  enterRoom(s, house, s.roomIndex, respawnX(house[s.roomIndex], x), START_Y);
 }
 
 function takeItem(s: GameState, o: RoomObject, index: number): void {
@@ -489,16 +597,24 @@ function takeDuct(s: GameState, house: Room[], o: RoomObject): void {
   else travel(s, house, o.target, START_X, START_Y);
 }
 
+/** Where stairs lift the plane away. Without a vent to ride, gliding in can't get as high. */
+function stairsUpLine(room: Room, stairs: RoomObject): number {
+  const hasVent = room.objects.some(
+    (o) => o.type === OBJECT.ventUp && o.x + o.w > stairs.x && o.x < stairs.x + stairs.w,
+  );
+  return hasVent ? STAIR_UP_Y : STAIR_UP_Y_WITHOUT_VENT;
+}
+
 function checkLinks(s: GameState, house: Room[], room: Room): boolean {
   if (s.linkCooldown > 0) return false;
   const centerX = s.x + PLANE_W / 2;
   for (const o of room.objects) {
     const insideStairs = centerX > o.x + STAIR_SIDE_INSET && centerX < o.x + o.w - STAIR_SIDE_INSET;
-    if (o.type === OBJECT.stairsUp && insideStairs && s.y < o.y + STAIR_TRIGGER_DEPTH) {
+    if (o.type === OBJECT.stairsUp && insideStairs && s.y < stairsUpLine(room, o)) {
       takeStairs(s, house, o);
       return true;
     }
-    if (o.type === OBJECT.stairsDown && insideStairs && s.y + PLANE_H > o.y + o.h - STAIR_TRIGGER_DEPTH) {
+    if (o.type === OBJECT.stairsDown && insideStairs && s.y + PLANE_H > STAIR_DOWN_Y) {
       takeStairs(s, house, o);
       return true;
     }
@@ -533,19 +649,11 @@ function checkObjects(s: GameState, room: Room): void {
       return;
     }
     if (!overlaps(s, o)) return;
+    if (SOLID_TYPES.includes(o.type)) {
+      startCrash(s);
+      return;
+    }
     switch (o.type) {
-      case OBJECT.table:
-      case OBJECT.shelf:
-      case OBJECT.books:
-      case OBJECT.cabinet:
-      case OBJECT.computer:
-      case OBJECT.toaster:
-      case OBJECT.fishbowl:
-      case OBJECT.kettle:
-      case OBJECT.wastebasket:
-      case OBJECT.shredder:
-        startCrash(s);
-        break;
       case OBJECT.candle:
         if (overlaps(s, candleFlame(o))) startCrash(s);
         break;
@@ -573,7 +681,7 @@ function checkObjects(s: GameState, room: Room): void {
 }
 
 export function enemyRect(e: Enemy): Rect {
-  return e.kind === ENEMY_DART ? { x: e.x, y: e.y, w: 43, h: 11 } : { x: e.x, y: e.y, w: 25, h: 29 };
+  return e.kind === ENEMY_DART ? { x: e.x + 4, y: e.y + 4, w: 54, h: 11 } : { x: e.x, y: e.y, w: 25, h: 29 };
 }
 
 function moveEnemies(s: GameState, dt: number): void {
@@ -581,7 +689,7 @@ function moveEnemies(s: GameState, dt: number): void {
     if (e.kind === ENEMY_DART) {
       e.x -= 130 * dt;
       e.y += 12 * dt;
-      if (e.x < -60) {
+      if (e.x < -80) {
         e.x = ROOM_W + 60;
         e.y = 60 + ((e.y * 7) % 170);
       }
@@ -612,6 +720,10 @@ function moveShots(s: GameState, dt: number): void {
         e.alive = false;
         shot.x = ROOM_W * 2;
         s.sounds.push("pop");
+        if (e.kind === ENEMY_DART) {
+          s.score += DART_POINTS;
+          s.popups.push({ amount: DART_POINTS, x: r.x + r.w / 2, y: r.y, age: 0 });
+        }
       }
     }
   }
@@ -658,6 +770,7 @@ function changeRoomAtEdges(s: GameState, house: Room[], room: Room): boolean {
 
 function fly(s: GameState, house: Room[], input: Input, dt: number): void {
   const room = house[s.roomIndex];
+  s.roomClock += dt;
   s.linkCooldown = Math.max(0, s.linkCooldown - dt);
   steer(s, input, dt);
   fireBand(s, input);
@@ -665,8 +778,9 @@ function fly(s: GameState, house: Room[], input: Input, dt: number): void {
   const air = isAirOff(s, room) ? null : verticalAir(s, room);
   let targetVy = FALL_SPEED;
   if (air?.rising && s.y > air.limit) targetVy = -LIFT_SPEED;
-  if (air && !air.rising) targetVy = LIFT_SPEED;
-  s.vy += (targetVy - s.vy) * Math.min(1, LIFT_RESPONSE * dt);
+  if (air && !air.rising) targetVy = DOWNDRAFT_SPEED;
+  const response = air && !air.rising ? DOWNDRAFT_RESPONSE : LIFT_RESPONSE;
+  s.vy += (targetVy - s.vy) * Math.min(1, response * dt);
 
   s.x += (s.vx + fanPush(s, room)) * dt;
   s.y += s.vy * dt;
@@ -704,6 +818,10 @@ function updateScoreDisplay(s: GameState, dt: number): void {
     popup.y -= POPUP_RISE_PER_SECOND * dt;
   }
   s.popups = s.popups.filter((popup) => popup.age < POPUP_SECONDS);
+  if (s.timeResult) {
+    s.timeResult.age += dt;
+    if (s.timeResult.age >= TIME_RESULT_SECONDS) s.timeResult = null;
+  }
 }
 
 export function step(s: GameState, house: Room[], input: Input, dt: number): void {

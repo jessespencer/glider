@@ -19,7 +19,7 @@ import type { GameState, Rect, Room, RoomObject } from "./sim";
 
 // Positions on the original sprite sheet. The plane always faces right; the second frame is the
 // same plane tilted back, which is how it flies backward.
-const PLANE_FORWARD: Rect = { x: 2, y: 3, w: 44, h: 16 };
+export const PLANE_FORWARD: Rect = { x: 2, y: 3, w: 44, h: 16 };
 const PLANE_TILTED_BACK: Rect = { x: 1, y: 22, w: 46, h: 18 };
 const PLANE_ICON: Rect = { x: 1, y: 319, w: 33, h: 13 };
 const ROOM_NUMBER_PAPER: Rect = { x: 37, y: 319, w: 16, h: 21 };
@@ -56,12 +56,11 @@ const COPTER_FRAMES: Rect[] = [
   { x: 177, y: 67, w: 11, h: 30 },
   { x: 171, y: 100, w: 22, h: 30 },
 ];
-const DART_FRAMES: Rect[] = [
-  { x: 265, y: 0, w: 43, h: 11 },
-  { x: 265, y: 12, w: 43, h: 11 },
-];
+export const DART: Rect = { x: 49, y: 2, w: 62, h: 19 };
 const BALLOON: Rect = { x: 118, y: 230, w: 25, h: 30 };
 const PAINTING: Rect = { x: 409, y: 55, w: 101, h: 92 };
+
+export const CLOCK_SPRITE: Rect = { x: 117, y: 1, w: 27, h: 28 };
 
 /** Objects drawn as one sprite sitting on the bottom of their room rectangle. */
 const OBJECT_SPRITES: Record<number, Rect> = {
@@ -69,7 +68,7 @@ const OBJECT_SPRITES: Record<number, Rect> = {
   [OBJECT.candle]: { x: 115, y: 31, w: 29, h: 20 },
   [OBJECT.fanLeft]: { x: 1, y: 207, w: 33, h: 54 },
   [OBJECT.fanRight]: { x: 1, y: 263, w: 33, h: 54 },
-  [OBJECT.clock]: { x: 117, y: 1, w: 27, h: 28 },
+  [OBJECT.clock]: CLOCK_SPRITE,
   [OBJECT.paper]: { x: 1, y: 126, w: 46, h: 20 },
   [OBJECT.grease]: { x: 115, y: 140, w: 17, h: 28 },
   [OBJECT.battery]: { x: 148, y: 56, w: 13, h: 24 },
@@ -99,6 +98,21 @@ const AIR_TILE = 8;
 const AIR_STEP_PIXELS = 2;
 const AIR_STEPS_PER_SECOND = 12;
 const FADE_IN_STEPS = 6;
+const BOOST_SHAKE = [-2, 1, 2, -1, 0, 2, -2];
+const BOOST_SHAKE_PER_SECOND = 30;
+const MIRROR_FRAME = 4;
+const MIRROR_PLANE_X = 33;
+const MIRROR_PLANE_Y = 34;
+
+// The plane's floor shadow, measured from the original game in room pixels.
+const PLANE_SHADOW_Y = 326;
+const PLANE_SHADOW_W = 41;
+const PLANE_SHADOW_H = 14;
+const PLANE_SHADOW_TIP_ROW = 3;
+const PLANE_SHADOW_LEFT_SLOPE = 1;
+const PLANE_SHADOW_RIGHT_SLOPE = 2.5;
+const PLANE_SHADOW_ALPHA = 0.5;
+
 const DARK_ALPHA = 0.93;
 const CANDLE_LIGHT_RADIUS = 46;
 
@@ -121,11 +135,17 @@ const CYAN = "#00ffff";
 const WHITE = "#ffffff";
 const BLACK = "#000000";
 
+const TIME_RESULT_Y = 30;
+const TIME_RESULT_PADDING = 12;
+const TIME_RESULT_BLINK_SECONDS = 0.6;
+const TIME_RESULT_BLINKS_PER_SECOND = 8;
+
 const MESSAGE_BOX: Rect = { x: 106, y: 96, w: 300, h: 62 };
 
 export interface Art {
   sprites: HTMLImageElement;
   spritesOpaque: HTMLImageElement;
+  titleScene: HTMLImageElement;
   backgrounds: Map<number, HTMLImageElement>;
   stairsUp: HTMLImageElement;
   stairsDown: HTMLImageElement;
@@ -143,18 +163,22 @@ export interface View {
   offsetY: number;
 }
 
-/** Uses the largest whole-number zoom that fits, which keeps the retro window small and crisp. */
-export function computeView(width: number, height: number): View {
+/**
+ * Fills as much of the window as a clean zoom allows. Each room pixel covers a whole number of
+ * device pixels, so the dithered art stays crisp: on a Retina screen that gives half steps.
+ */
+export function computeView(width: number, height: number, ratio: number): View {
   const fit = Math.min(width / FRAME_W, height / ROOM_H);
-  const scale = fit >= 1 ? Math.floor(fit) : fit;
+  const deviceScale = Math.floor(fit * ratio);
+  const scale = deviceScale >= 1 ? deviceScale / ratio : fit;
   return {
     scale,
-    offsetX: Math.round((width - ROOM_W * scale) / 2),
-    offsetY: Math.round((height - ROOM_H * scale) / 2),
+    offsetX: Math.round(((width - ROOM_W * scale) / 2) * ratio) / ratio,
+    offsetY: Math.round(((height - ROOM_H * scale) / 2) * ratio) / ratio,
   };
 }
 
-function drawSprite(ctx: CanvasRenderingContext2D, art: Art, r: Rect, x: number, y: number): void {
+export function drawSprite(ctx: CanvasRenderingContext2D, art: Art, r: Rect, x: number, y: number): void {
   ctx.drawImage(art.sprites, r.x, r.y, r.w, r.h, Math.round(x), Math.round(y), r.w, r.h);
 }
 
@@ -246,13 +270,24 @@ function drawWindow(ctx: CanvasRenderingContext2D, o: RoomObject): void {
   ctx.fillRect(o.x + 6, o.y + o.h / 2 - 2, o.w - 12, 4);
 }
 
-function drawMirror(ctx: CanvasRenderingContext2D, o: RoomObject): void {
-  ctx.fillStyle = "#3c220e";
+function drawMirror(ctx: CanvasRenderingContext2D, art: Art, s: GameState, o: RoomObject): void {
+  ctx.fillStyle = BLACK;
   ctx.fillRect(o.x, o.y, o.w, o.h);
-  ctx.fillStyle = "#b8d8d8";
-  ctx.fillRect(o.x + 5, o.y + 5, o.w - 10, o.h - 10);
-  ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-  ctx.fillRect(o.x + 16, o.y + 5, 12, o.h - 10);
+  ctx.fillStyle = "#7a4a22";
+  ctx.fillRect(o.x + 1, o.y + 1, o.w - 2, o.h - 2);
+  ctx.fillStyle = BLACK;
+  ctx.fillRect(o.x + MIRROR_FRAME - 1, o.y + MIRROR_FRAME - 1, o.w - (MIRROR_FRAME - 1) * 2, o.h - (MIRROR_FRAME - 1) * 2);
+  ctx.fillStyle = WHITE;
+  ctx.fillRect(o.x + MIRROR_FRAME, o.y + MIRROR_FRAME, o.w - MIRROR_FRAME * 2, o.h - MIRROR_FRAME * 2);
+
+  if (!isPlaneVisible(s)) return;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(o.x + MIRROR_FRAME, o.y + MIRROR_FRAME, o.w - MIRROR_FRAME * 2, o.h - MIRROR_FRAME * 2);
+  ctx.clip();
+  ctx.globalAlpha = fadeInAlpha(s);
+  drawSprite(ctx, art, planeFrame(s), s.x + MIRROR_PLANE_X, s.y + MIRROR_PLANE_Y);
+  ctx.restore();
 }
 
 /** Centers a sprite on its room rectangle and sits it on the rectangle's bottom edge. */
@@ -303,7 +338,7 @@ function drawObject(ctx: CanvasRenderingContext2D, art: Art, room: Room, s: Game
       drawWindow(ctx, o);
       return;
     case OBJECT.mirror:
-      drawMirror(ctx, o);
+      drawMirror(ctx, art, s, o);
       return;
     case OBJECT.painting:
       ctx.drawImage(art.spritesOpaque, PAINTING.x, PAINTING.y, PAINTING.w, PAINTING.h, o.x, o.y, PAINTING.w, PAINTING.h);
@@ -342,7 +377,7 @@ function drawEnemies(ctx: CanvasRenderingContext2D, art: Art, s: GameState): voi
     if (!e.alive) continue;
     if (e.kind === ENEMY_BALLOON) drawSprite(ctx, art, BALLOON, e.x, e.y);
     else if (e.kind === ENEMY_COPTER) drawSprite(ctx, art, frameAt(COPTER_FRAMES, s.time, 10), e.x, e.y);
-    else drawSprite(ctx, art, frameAt(DART_FRAMES, s.time, 8), e.x, e.y);
+    else drawSprite(ctx, art, DART, e.x, e.y);
   }
   ctx.fillStyle = WHITE;
   for (const shot of s.shots) ctx.fillRect(Math.round(shot.x), Math.round(shot.y), 8, 2);
@@ -360,26 +395,58 @@ function drawDarkness(ctx: CanvasRenderingContext2D, room: Room): void {
   ctx.fill("evenodd");
 }
 
+function planeFrame(s: GameState): Rect {
+  return s.vx < 0 ? PLANE_TILTED_BACK : PLANE_FORWARD;
+}
+
+function isPlaneVisible(s: GameState): boolean {
+  if (s.phase === "gameOver" || s.phase === "won") return false;
+  if (s.phase === "crashing" && s.crashTime >= CRASH_VISIBLE_SECONDS) return false;
+  return !(s.phase === "ready" && s.opensWithFade);
+}
+
+function fadeInAlpha(s: GameState): number {
+  if (s.phase !== "fadingIn") return 1;
+  const steps = Math.ceil((s.fadeTime / FADE_IN_SECONDS) * FADE_IN_STEPS);
+  return Math.min(1, steps / FADE_IN_STEPS);
+}
+
+/** The original's triangle, softened and drawn row by row so its edges stay stepped. */
+function drawPlaneShadow(ctx: CanvasRenderingContext2D, s: GameState): void {
+  if (!isPlaneVisible(s)) return;
+  const x = Math.round(s.x);
+  ctx.save();
+  ctx.globalAlpha = fadeInAlpha(s) * PLANE_SHADOW_ALPHA;
+  ctx.fillStyle = BLACK;
+  for (let row = 0; row < PLANE_SHADOW_H; row++) {
+    const left = Math.round(row * PLANE_SHADOW_LEFT_SLOPE);
+    const right =
+      row < PLANE_SHADOW_TIP_ROW
+        ? Math.round(((row + 1) / PLANE_SHADOW_TIP_ROW) * PLANE_SHADOW_W)
+        : Math.round(PLANE_SHADOW_W - (row - PLANE_SHADOW_TIP_ROW) * PLANE_SHADOW_RIGHT_SLOPE);
+    ctx.fillRect(x + left, PLANE_SHADOW_Y + row, right - left, 1);
+  }
+  ctx.restore();
+}
+
+/** A fast, uneven rattle while the battery is burning. */
+function boostShake(s: GameState): [number, number] {
+  if (!s.boosting) return [0, 0];
+  const tick = Math.floor(s.time * BOOST_SHAKE_PER_SECOND);
+  return [BOOST_SHAKE[tick % BOOST_SHAKE.length], BOOST_SHAKE[(tick * 3 + 1) % BOOST_SHAKE.length]];
+}
+
 function drawPlane(ctx: CanvasRenderingContext2D, art: Art, s: GameState): void {
-  if (s.phase === "gameOver" || s.phase === "won") return;
-  if (s.phase === "crashing" && s.crashTime >= CRASH_VISIBLE_SECONDS) return;
-  if (s.phase === "ready" && s.opensWithFade) return;
+  if (!isPlaneVisible(s)) return;
 
   // Snap to whole room pixels, like the original, instead of gliding between them.
   const x = Math.round(s.x);
   const y = Math.round(s.y);
   ctx.save();
-  if (s.phase === "fadingIn") {
-    const steps = Math.ceil((s.fadeTime / FADE_IN_SECONDS) * FADE_IN_STEPS);
-    ctx.globalAlpha = Math.min(1, steps / FADE_IN_STEPS);
-  }
-  ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
-  ctx.beginPath();
-  ctx.ellipse(x + PLANE_W / 2, FLOOR_SHADOW_Y, PLANE_W / 2, 4, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  const frame = s.vx < 0 ? PLANE_TILTED_BACK : PLANE_FORWARD;
-  drawSprite(ctx, art, frame, x + (PLANE_W - frame.w) / 2, y + (PLANE_H - frame.h) / 2);
+  ctx.globalAlpha = fadeInAlpha(s);
+  const frame = planeFrame(s);
+  const [shakeX, shakeY] = boostShake(s);
+  drawSprite(ctx, art, frame, x + shakeX + (PLANE_W - frame.w) / 2, y + shakeY + (PLANE_H - frame.h) / 2);
   ctx.restore();
 }
 
@@ -434,11 +501,25 @@ function drawHud(ctx: CanvasRenderingContext2D, art: Art, s: GameState, room: Ro
     drawSprite(ctx, art, BATTERY_ICON, itemX, HUD_ICON_Y - 1);
     font.draw(ctx, String(Math.ceil(s.energy)), itemX + 10, HUD_TEXT_Y, WHITE);
   }
-  const icons = Math.min(HUD_MAX_ICONS, Math.max(0, s.lives - 1));
+  const icons = Math.min(HUD_MAX_ICONS, s.lives);
   for (let i = 0; i < icons; i++) {
     // Lives are lost from the left, so the remaining icons stay at the panel's right end.
     drawSprite(ctx, art, PLANE_ICON, HUD_ICON_X + (HUD_MAX_ICONS - icons + i) * HUD_ICON_SPACING, HUD_ICON_Y);
   }
+}
+
+/** A small box that blinks at the start, then holds, so it's noticed without covering the room. */
+function drawTimeResult(ctx: CanvasRenderingContext2D, art: Art, s: GameState): void {
+  const result = s.timeResult;
+  if (!result) return;
+  const blinking = result.age < TIME_RESULT_BLINK_SECONDS;
+  if (blinking && Math.floor(result.age * TIME_RESULT_BLINKS_PER_SECOND) % 2 === 1) return;
+
+  const text = result.made ? `Time bonus +${result.points}` : "Too slow!";
+  const w = art.font.measure(text) + TIME_RESULT_PADDING * 2;
+  const box: Rect = { x: Math.round((ROOM_W - w) / 2), y: TIME_RESULT_Y, w, h: 26 };
+  drawPanel(ctx, box);
+  art.font.draw(ctx, text, box.x + TIME_RESULT_PADDING, box.y + 5, result.made ? CYAN : RED);
 }
 
 function drawMessage(ctx: CanvasRenderingContext2D, art: Art, s: GameState): void {
@@ -484,10 +565,12 @@ export function render(
   drawBackground(ctx, art, room);
   room.objects.forEach((o, index) => drawObject(ctx, art, room, s, o, index));
   drawEnemies(ctx, art, s);
+  drawPlaneShadow(ctx, s);
   if (isRoomDark(s, room)) drawDarkness(ctx, room);
   drawPlane(ctx, art, s);
   drawPopups(ctx, art, s);
   drawHud(ctx, art, s, room);
+  drawTimeResult(ctx, art, s);
   drawMessage(ctx, art, s);
   ctx.restore();
 }

@@ -4,6 +4,7 @@ import { computeView, render } from "./render";
 import type { Art, View } from "./render";
 import { createSounds, showSoundBoard } from "./sound";
 import { beginFlight, createGame, step } from "./sim";
+import { createTitle, showsTitle } from "./title";
 import type { GameState, Input, Room } from "./sim";
 
 // A low tick rate, drawn with no in-between frames, gives the original's slightly chunky motion.
@@ -17,8 +18,8 @@ const input: Input = { left: false, right: false, turbo: false, fire: false };
 const startRoom = Number(new URLSearchParams(location.search).get("room") ?? 1) - 1;
 let house: Room[] = [];
 let game: GameState;
-let view: View = computeView(window.innerWidth, window.innerHeight);
 let ratio = window.devicePixelRatio;
+let view: View = computeView(window.innerWidth, window.innerHeight, ratio);
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -41,7 +42,7 @@ function resize(): void {
   ratio = window.devicePixelRatio;
   canvas.width = Math.round(window.innerWidth * ratio);
   canvas.height = Math.round(window.innerHeight * ratio);
-  view = computeView(window.innerWidth, window.innerHeight);
+  view = computeView(window.innerWidth, window.innerHeight, ratio);
 }
 
 function toggleFullscreen(): void {
@@ -57,7 +58,8 @@ function handleKey(event: KeyboardEvent, down: boolean): void {
   if (event.code === "Space") input.fire = down;
   if (!down) return;
 
-  if (steering || event.code === "Space" || event.code === "Enter") {
+  const onTitle = showsTitle(game) && event.code !== "KeyF" && !event.metaKey;
+  if (steering || onTitle || event.code === "Space" || event.code === "Enter") {
     event.preventDefault();
     beginFlight(game);
   }
@@ -68,10 +70,11 @@ function handleKey(event: KeyboardEvent, down: boolean): void {
 const BACKGROUND_IDS = [200, 201, 202, 203, 204, 205, 206, 207, 208, 209];
 
 async function start(): Promise<void> {
-  const [sprites, spritesOpaque, stairsUp, stairsDown, airUp, panelLeft, panelRight, font, smallFont, rooms, backgrounds] =
+  const [sprites, spritesOpaque, titleScene, stairsUp, stairsDown, airUp, panelLeft, panelRight, font, smallFont, rooms, backgrounds] =
     await Promise.all([
       loadImage("assets/sprites.png"),
       loadImage("assets/sprites-opaque.png"),
+      loadImage("assets/title-scene.png"),
       loadImage("assets/stairs-up.png"),
       loadImage("assets/stairs-down.png"),
       loadImage("assets/air-up.png"),
@@ -85,6 +88,7 @@ async function start(): Promise<void> {
   const art: Art = {
     sprites,
     spritesOpaque,
+    titleScene,
     stairsUp,
     stairsDown,
     airUp,
@@ -97,6 +101,7 @@ async function start(): Promise<void> {
   house = rooms;
   game = createGame(house, startRoom, true);
   const sounds = createSounds();
+  const title = createTitle(art);
 
   resize();
   window.addEventListener("resize", resize);
@@ -105,6 +110,10 @@ async function start(): Promise<void> {
     handleKey(event, true);
   });
   window.addEventListener("keyup", (event) => handleKey(event, false));
+  window.addEventListener("pointerdown", () => {
+    sounds.unlock();
+    if (showsTitle(game)) beginFlight(game);
+  });
   window.addEventListener("blur", () => {
     input.left = false;
     input.right = false;
@@ -122,8 +131,11 @@ async function start(): Promise<void> {
         input,
         art,
         step: () => step(game, house, input, STEP_SECONDS),
-        draw: (target: CanvasRenderingContext2D, state: GameState, frameView: View) => render(target, art, house, state, frameView, 1),
-        createGame: (room: number) => createGame(house, room),
+        draw: (target: CanvasRenderingContext2D, state: GameState, frameView: View) => {
+          render(target, art, house, state, frameView, 1);
+          if (showsTitle(state)) title.draw(target, state, frameView, 1);
+        },
+        createGame: (room: number, opensWithFade = false) => createGame(house, room, opensWithFade),
       },
     });
   }
@@ -139,6 +151,7 @@ async function start(): Promise<void> {
     }
     for (const sound of game.sounds.splice(0)) sounds.play(sound);
     render(ctx, art, house, game, view, ratio);
+    if (showsTitle(game)) title.draw(ctx, game, view, ratio);
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
