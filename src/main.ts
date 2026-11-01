@@ -3,7 +3,7 @@ import type { FontMetrics } from "./pixelFont";
 import { computeView, render } from "./render";
 import type { Art, View } from "./render";
 import { createSounds, showSoundBoard } from "./sound";
-import { createGame, step } from "./sim";
+import { beginFlight, createGame, step } from "./sim";
 import type { GameState, Input, Room } from "./sim";
 
 // A low tick rate, drawn with no in-between frames, gives the original's slightly chunky motion.
@@ -59,10 +59,7 @@ function handleKey(event: KeyboardEvent, down: boolean): void {
 
   if (steering || event.code === "Space" || event.code === "Enter") {
     event.preventDefault();
-    if (game.phase === "ready") {
-      game.phase = "flying";
-      game.sounds.push("startup");
-    }
+    beginFlight(game);
   }
   if (event.code === "KeyR") game = createGame(house, startRoom);
   if (event.code === "KeyF") toggleFullscreen();
@@ -98,7 +95,7 @@ async function start(): Promise<void> {
     backgrounds: new Map(BACKGROUND_IDS.map((id, index) => [id, backgrounds[index]])),
   };
   house = rooms;
-  game = createGame(house, startRoom);
+  game = createGame(house, startRoom, true);
   const sounds = createSounds();
 
   resize();

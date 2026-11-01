@@ -74,6 +74,9 @@ const STAIR_ARRIVAL_UP = 200;
 const STAIR_ARRIVAL_DOWN = 170;
 const DUCT_REACH_Y = 14;
 
+/** Matches the length of the original's startup sound. */
+export const FADE_IN_SECONDS = 0.8;
+
 /** How long the wrecked plane stays frozen on screen before it vanishes. */
 export const CRASH_VISIBLE_SECONDS = 0.2;
 
@@ -111,7 +114,7 @@ export interface Room {
   objects: RoomObject[];
 }
 
-export type Phase = "ready" | "flying" | "crashing" | "won" | "gameOver";
+export type Phase = "ready" | "fadingIn" | "flying" | "crashing" | "won" | "gameOver";
 
 export type SoundEvent =
   | "clock"
@@ -129,6 +132,7 @@ export type SoundEvent =
   | "guitar"
   | "startup"
   | "level"
+  | "tick"
   | "win";
 
 export interface Input {
@@ -193,7 +197,8 @@ export interface GameState {
   flipped: Set<string>;
   lightsOn: Set<number>;
   airOn: Set<number>;
-  visitedRooms: Set<number>;
+  /** Only the very first game opens with the plane fading in. */
+  opensWithFade: boolean;
   enemies: Enemy[];
   shots: Shot[];
   touching: Set<number>;
@@ -201,6 +206,7 @@ export interface GameState {
   linkCooldown: number;
   entry: RoomEntry;
   crashTime: number;
+  fadeTime: number;
   time: number;
   sounds: SoundEvent[];
 }
@@ -224,10 +230,6 @@ function saveEntry(s: GameState): void {
 }
 
 function enterRoom(s: GameState, house: Room[], roomIndex: number, x: number, y: number): void {
-  if (!s.visitedRooms.has(roomIndex)) {
-    s.visitedRooms.add(roomIndex);
-    s.sounds.push("level");
-  }
   s.roomIndex = roomIndex;
   s.x = x;
   s.y = y;
@@ -238,7 +240,13 @@ function enterRoom(s: GameState, house: Room[], roomIndex: number, x: number, y:
   saveEntry(s);
 }
 
-export function createGame(house: Room[], roomIndex = 0): GameState {
+/** Moves to a room as play continues, unlike a crash reload, which stays quiet. */
+function changeRoom(s: GameState, house: Room[], roomIndex: number, x: number, y: number): void {
+  if (roomIndex !== s.roomIndex) s.sounds.push("level");
+  enterRoom(s, house, roomIndex, x, y);
+}
+
+export function createGame(house: Room[], roomIndex = 0, opensWithFade = false): GameState {
   const s: GameState = {
     phase: "ready",
     roomIndex,
@@ -256,7 +264,7 @@ export function createGame(house: Room[], roomIndex = 0): GameState {
     flipped: new Set(),
     lightsOn: new Set(),
     airOn: new Set(),
-    visitedRooms: new Set([roomIndex]),
+    opensWithFade,
     enemies: [],
     shots: [],
     touching: new Set(),
@@ -264,11 +272,24 @@ export function createGame(house: Room[], roomIndex = 0): GameState {
     linkCooldown: 0,
     entry: { x: START_X, y: START_Y, score: 0, energy: 0, bands: 0, collected: new Set() },
     crashTime: 0,
+    fadeTime: 0,
     time: 0,
     sounds: [],
   };
   enterRoom(s, house, roomIndex, START_X, START_Y);
   return s;
+}
+
+export function beginFlight(s: GameState): void {
+  if (s.phase !== "ready") return;
+  if (s.opensWithFade) {
+    s.phase = "fadingIn";
+    s.fadeTime = 0;
+    s.sounds.push("startup");
+  } else {
+    s.phase = "flying";
+    s.sounds.push("level");
+  }
 }
 
 export function isObjectOn(s: GameState, o: RoomObject, objectIndex: number): boolean {
@@ -450,7 +471,7 @@ function travel(s: GameState, house: Room[], roomIndex: number, x: number, y: nu
   s.vx = 0;
   s.vy = 0;
   s.sounds.push("travel");
-  enterRoom(s, house, roomIndex, x, y);
+  changeRoom(s, house, roomIndex, x, y);
 }
 
 function takeStairs(s: GameState, house: Room[], o: RoomObject): void {
@@ -625,11 +646,11 @@ function changeRoomAtEdges(s: GameState, house: Room[], room: Room): boolean {
     s.vx = 0;
   }
   if (s.x > MAX_X) {
-    enterRoom(s, house, s.roomIndex + 1, LEFT_EXIT_X + 2, s.y);
+    changeRoom(s, house, s.roomIndex + 1, LEFT_EXIT_X + 2, s.y);
     return true;
   }
   if (s.x < LEFT_EXIT_X) {
-    enterRoom(s, house, s.roomIndex - 1, MAX_X - 2, s.y);
+    changeRoom(s, house, s.roomIndex - 1, MAX_X - 2, s.y);
     return true;
   }
   return false;
@@ -669,8 +690,15 @@ function fly(s: GameState, house: Room[], input: Input, dt: number): void {
   moveShots(s, dt);
 }
 
+/** The scoreboard counts in whole tens, so it reads as a ticker rather than a blur of digits. */
+export function shownScoreTens(s: GameState): number {
+  return Math.floor(s.shownScore / 10) * 10;
+}
+
 function updateScoreDisplay(s: GameState, dt: number): void {
+  const shownBefore = shownScoreTens(s);
   s.shownScore = Math.min(s.score, s.shownScore + SCORE_TICKER_PER_SECOND * dt);
+  if (shownScoreTens(s) > shownBefore) s.sounds.push("tick");
   for (const popup of s.popups) {
     popup.age += dt;
     popup.y -= POPUP_RISE_PER_SECOND * dt;
@@ -681,7 +709,10 @@ function updateScoreDisplay(s: GameState, dt: number): void {
 export function step(s: GameState, house: Room[], input: Input, dt: number): void {
   s.time += dt;
   updateScoreDisplay(s, dt);
-  if (s.phase === "flying") {
+  if (s.phase === "fadingIn") {
+    s.fadeTime += dt;
+    if (s.fadeTime >= FADE_IN_SECONDS) s.phase = "flying";
+  } else if (s.phase === "flying") {
     fly(s, house, input, dt);
   } else if (s.phase === "crashing") {
     s.crashTime += dt;

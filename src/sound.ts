@@ -2,7 +2,7 @@ import type { SoundEvent } from "./sim";
 
 const SOUND_COUNT = 31;
 
-// Confirmed by ear: crash, clock, battery, drip, guitar, startup, level. The rest are matched by
+// Confirmed by ear: crash, clock, battery, drip, guitar, startup, level, tick. The rest are matched by
 // length and character; open ?sounds to audition them and correct this table.
 const SOUND_FOR_EVENT: Record<SoundEvent, number> = {
   clock: 5,
@@ -20,6 +20,7 @@ const SOUND_FOR_EVENT: Record<SoundEvent, number> = {
   guitar: 11,
   startup: 2,
   level: 29,
+  tick: 21,
   win: 29,
 };
 
@@ -71,7 +72,7 @@ export function createSounds(): Sounds {
         return;
       }
       const source = start(event);
-      // A new game opens with the startup sound, then the room's jingle.
+      // The first load opens with the startup sound, then the room's jingle.
       if (event === "startup" && source) source.onended = playLevel;
     },
   };

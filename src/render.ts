@@ -3,6 +3,7 @@ import {
   CRASH_VISIBLE_SECONDS,
   ENEMY_BALLOON,
   ENEMY_COPTER,
+  FADE_IN_SECONDS,
   OBJECT,
   PLANE_H,
   PLANE_W,
@@ -12,6 +13,7 @@ import {
   isCollected,
   isRoomDark,
   movingHazard,
+  shownScoreTens,
 } from "./sim";
 import type { GameState, Rect, Room, RoomObject } from "./sim";
 
@@ -96,6 +98,7 @@ const AIR_W = 16;
 const AIR_TILE = 8;
 const AIR_STEP_PIXELS = 2;
 const AIR_STEPS_PER_SECOND = 12;
+const FADE_IN_STEPS = 6;
 const DARK_ALPHA = 0.93;
 const CANDLE_LIGHT_RADIUS = 46;
 
@@ -359,10 +362,16 @@ function drawDarkness(ctx: CanvasRenderingContext2D, room: Room): void {
 function drawPlane(ctx: CanvasRenderingContext2D, art: Art, s: GameState): void {
   if (s.phase === "gameOver" || s.phase === "won") return;
   if (s.phase === "crashing" && s.crashTime >= CRASH_VISIBLE_SECONDS) return;
+  if (s.phase === "ready" && s.opensWithFade) return;
 
   // Snap to whole room pixels, like the original, instead of gliding between them.
   const x = Math.round(s.x);
   const y = Math.round(s.y);
+  ctx.save();
+  if (s.phase === "fadingIn") {
+    const steps = Math.ceil((s.fadeTime / FADE_IN_SECONDS) * FADE_IN_STEPS);
+    ctx.globalAlpha = Math.min(1, steps / FADE_IN_STEPS);
+  }
   ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
   ctx.beginPath();
   ctx.ellipse(x + PLANE_W / 2, FLOOR_SHADOW_Y, PLANE_W / 2, 4, 0, 0, Math.PI * 2);
@@ -370,6 +379,7 @@ function drawPlane(ctx: CanvasRenderingContext2D, art: Art, s: GameState): void 
 
   const frame = s.vx < 0 ? PLANE_TILTED_BACK : PLANE_FORWARD;
   drawSprite(ctx, art, frame, x + (PLANE_W - frame.w) / 2, y + (PLANE_H - frame.h) / 2);
+  ctx.restore();
 }
 
 function drawPopups(ctx: CanvasRenderingContext2D, art: Art, s: GameState): void {
@@ -406,9 +416,7 @@ function drawHud(ctx: CanvasRenderingContext2D, art: Art, s: GameState, room: Ro
   font.draw(ctx, number, paper.x + Math.round((paper.w - 4 - font.measure(number)) / 2), HUD_TEXT_Y, BLACK);
 
   drawPanel(ctx, HUD_SCORE);
-  // Whole tens keep the count looking like a ticker rather than a blur of digits.
-  const shownScore = Math.floor(s.shownScore / 10) * 10;
-  font.draw(ctx, String(shownScore), HUD_SCORE.x + HUD_TEXT_INSET, HUD_TEXT_Y, CYAN);
+  font.draw(ctx, String(shownScoreTens(s)), HUD_SCORE.x + HUD_TEXT_INSET, HUD_TEXT_Y, CYAN);
 
   drawPanel(ctx, HUD_LIVES);
   const lives = String(s.lives);
