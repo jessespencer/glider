@@ -1,0 +1,5 @@
+node_modules
+dist
+.DS_Store
+# Copyrighted game art and rooms. npm run import-assets rebuilds these from the local install.
+public/assets
