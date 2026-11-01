@@ -72,9 +72,7 @@ const STAIR_SIDE_INSET = 40;
 const STAIR_TRIGGER_DEPTH = 50;
 const STAIR_ARRIVAL_UP = 200;
 const STAIR_ARRIVAL_DOWN = 170;
-const DUCT_REACH_X = 12;
 const DUCT_REACH_Y = 14;
-const DUCT_ARRIVAL_Y = 44;
 
 /** How long the wrecked plane stays frozen on screen before it vanishes. */
 export const CRASH_VISIBLE_SECONDS = 0.2;
@@ -344,11 +342,16 @@ function candleFlame(o: RoomObject): Rect {
   return { x: o.x + o.w / 2 - 7, y: o.y - 8, w: 14, h: o.h + 8 };
 }
 
+/** An "on" duct is where planes come out, blowing down to its amount. Others pull planes in. */
+export function isExitDuct(o: RoomObject): boolean {
+  return o.type === OBJECT.duct && o.on;
+}
+
 function verticalAir(s: GameState, room: Room): { rising: boolean; limit: number } | null {
   const centerX = s.x + PLANE_W / 2;
   for (const o of room.objects) {
     const isRising = o.type === OBJECT.ventUp || o.type === OBJECT.candle;
-    const isSinking = o.type === OBJECT.ventDown;
+    const isSinking = o.type === OBJECT.ventDown || isExitDuct(o);
     if (!isRising && !isSinking) continue;
     if (Math.abs(centerX - (o.x + o.w / 2)) > COLUMN_REACH) continue;
     if (isRising && s.y <= o.y) return { rising: true, limit: o.amount };
@@ -459,6 +462,12 @@ function takeStairs(s: GameState, house: Room[], o: RoomObject): void {
   travel(s, house, o.target, x, y);
 }
 
+function takeDuct(s: GameState, house: Room[], o: RoomObject): void {
+  const exit = house[o.target].objects.find(isExitDuct);
+  if (exit) travel(s, house, o.target, exit.x + exit.w / 2 - PLANE_W / 2, exit.y + exit.h);
+  else travel(s, house, o.target, START_X, START_Y);
+}
+
 function checkLinks(s: GameState, house: Room[], room: Room): boolean {
   if (s.linkCooldown > 0) return false;
   const centerX = s.x + PLANE_W / 2;
@@ -472,10 +481,10 @@ function checkLinks(s: GameState, house: Room[], room: Room): boolean {
       takeStairs(s, house, o);
       return true;
     }
-    if (o.type === OBJECT.duct && house[o.target]) {
-      const underDuct = Math.abs(centerX - (o.x + o.w / 2)) <= DUCT_REACH_X;
+    if (o.type === OBJECT.duct && !o.on && house[o.target]) {
+      const underDuct = centerX >= o.x && centerX <= o.x + o.w;
       if (underDuct && s.y <= o.y + o.h + DUCT_REACH_Y) {
-        travel(s, house, o.target, o.amount - PLANE_W / 2, DUCT_ARRIVAL_Y);
+        takeDuct(s, house, o);
         return true;
       }
     }

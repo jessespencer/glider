@@ -320,6 +320,7 @@ function drawObject(ctx: CanvasRenderingContext2D, art: Art, room: Room, s: Game
       return;
     case OBJECT.duct:
       drawSprite(ctx, art, DUCT, o.x, o.y);
+      if (o.on && !airOff) drawAirColumn(ctx, art, o.x + o.w / 2, o.y + o.h, o.amount, s.time, -1);
       return;
     case OBJECT.candle:
       drawOnRect(ctx, art, OBJECT_SPRITES[o.type], o);
