@@ -111,6 +111,7 @@ const HUD_TEXT_Y = 7;
 const HUD_TEXT_INSET = 6;
 const HUD_ITEMS_X = 311;
 const HUD_LIVES_TEXT_RIGHT = 391;
+const HUD_LIVES_TEXT_MINIMUM = 3;
 const HUD_ICON_X = 397;
 const HUD_ICON_Y = 7;
 const HUD_ICON_SPACING = 37;
@@ -419,8 +420,10 @@ function drawHud(ctx: CanvasRenderingContext2D, art: Art, s: GameState, room: Ro
   font.draw(ctx, String(shownScoreTens(s)), HUD_SCORE.x + HUD_TEXT_INSET, HUD_TEXT_Y, CYAN);
 
   drawPanel(ctx, HUD_LIVES);
-  const lives = String(s.lives);
-  font.draw(ctx, lives, HUD_LIVES_TEXT_RIGHT - font.measure(lives), HUD_TEXT_Y, RED);
+  if (s.lives >= HUD_LIVES_TEXT_MINIMUM) {
+    const lives = String(s.lives);
+    font.draw(ctx, lives, HUD_LIVES_TEXT_RIGHT - font.measure(lives), HUD_TEXT_Y, RED);
+  }
   let itemX = HUD_ITEMS_X;
   if (s.bands > 0) {
     drawSprite(ctx, art, BAND_ICON, itemX, HUD_ICON_Y - 1);
