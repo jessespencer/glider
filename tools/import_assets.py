@@ -21,8 +21,14 @@ FONT_TYPE = 0x8008
 SPRITE_COLOR, SPRITE_MASK = 27, 1
 AIR_UP_COLOR, AIR_UP_MASK = 19, 18
 PANEL_LEFT, PANEL_RIGHT = 2, 3
-# Room backPictID -> bitmap resource. Only the Welcome room's background is confirmed so far.
-BACKGROUNDS = {200: 7}
+STAIRS_UP, STAIRS_DOWN = 5, 6
+SOUND_TYPE = 0xF009
+# Room backPictID -> bitmap resource. Matched by room names: Nippon, basement, attic, galley.
+BACKGROUNDS = {200: 7, 201: 8, 202: 30, 203: 9, 204: 29, 205: 10, 206: 31, 207: 32, 208: 33, 209: 34}
+HOUSE_FILES = ["HOUSE.GHS", "HOUSE2.GHS"]
+# Objects whose amount (or extra, for ducts) names a room in their own house file.
+ROOM_LINK_TYPES = {5, 44, 45}
+DUCT_TYPE = 10
 FONT_COLUMNS = 16
 
 ROOM_BASE, ROOM_SIZE, ROOM_COUNT = 1270, 314, 40
@@ -133,24 +139,48 @@ def write_font(path, name, wanted_height):
                    "widths": [g[0] for g in glyphs]}, f)
 
 
-def read_house(path):
+def write_sounds(exe_path):
+    folder = os.path.join(OUT_DIR, "sounds")
+    os.makedirs(folder, exist_ok=True)
+    for res_id, blob in read_resources(exe_path, SOUND_TYPE).items():
+        riff_size = struct.unpack_from("<I", blob, 4)[0] + 8
+        with open(os.path.join(folder, "%02d.wav" % res_id), "wb") as f:
+            f.write(blob[:riff_size])
+
+
+def read_house(path, first_room):
+    """Read one house file, turning its 1-based room links into indexes into the whole chain."""
     d = open(path, "rb").read()
     rooms = []
     for i in range(ROOM_COUNT):
         r = d[ROOM_BASE + i * ROOM_SIZE:ROOM_BASE + (i + 1) * ROOM_SIZE]
         count, back = struct.unpack_from(">HH", r, 26)
+        if r[0] == 0:
+            continue
         objects = []
         for j in range(count):
             kind, top, left, bottom, right, amount, extra, is_on = struct.unpack_from(
                 ">H4hHHH", r, OBJECT_BASE + j * OBJECT_SIZE)
+            target = -1
+            if kind in ROOM_LINK_TYPES and amount > 0:
+                target = first_room + amount - 1
+            elif kind == DUCT_TYPE:
+                target = first_room + extra - 1
+            # Only the high byte of the on flag means anything; the low byte is leftover junk.
             objects.append({"type": kind, "x": left, "y": top, "w": right - left, "h": bottom - top,
-                            "amount": amount, "extra": extra, "isOn": is_on})
+                            "amount": amount, "extra": extra, "on": is_on >= 256, "target": target})
+        enemy_kind, enemy_count = struct.unpack_from(">HH", r, 48)
+        condition = struct.unpack_from(">H", r, 56)[0]
         rooms.append({
             "name": r[1:1 + r[0]].decode("mac_roman"),
             "backPict": back,
             "tiles": list(struct.unpack_from(">8H", r, 30)),
             "leftOpen": r[46] != 0,
             "rightOpen": r[47] != 0,
+            "enemyKind": enemy_kind,
+            "enemyCount": enemy_count,
+            "startsDark": condition == 2,
+            "startsAirOff": condition == 1,
             "objects": objects,
         })
     return rooms
@@ -163,14 +193,21 @@ def main():
     bitmaps = read_resources(os.path.join(GAME_DIR, "GLIDER.EXE"), BITMAP_TYPE)
     write_masked(bitmaps, SPRITE_COLOR, SPRITE_MASK, "sprites.png")
     write_masked(bitmaps, AIR_UP_COLOR, AIR_UP_MASK, "air-up.png")
+    write_opaque(bitmaps, SPRITE_COLOR, "sprites-opaque.png")
+    write_opaque(bitmaps, STAIRS_UP, "stairs-up.png")
+    write_opaque(bitmaps, STAIRS_DOWN, "stairs-down.png")
+    write_sounds(os.path.join(GAME_DIR, "GLIDER.EXE"))
     write_opaque(bitmaps, PANEL_LEFT, "panel-left.png")
     write_opaque(bitmaps, PANEL_RIGHT, "panel-right.png")
     for pict_id, res_id in BACKGROUNDS.items():
         write_opaque(bitmaps, res_id, "back-%d.png" % pict_id)
     write_font(SYSTEM_FONT, "font", 16)
     write_font(SMALL_FONT, "font-small", 11)
+    rooms = []
+    for index, name in enumerate(HOUSE_FILES):
+        rooms += read_house(os.path.join(GAME_DIR, name), index * ROOM_COUNT)
     with open(os.path.join(OUT_DIR, "house.json"), "w") as f:
-        json.dump(read_house(os.path.join(GAME_DIR, "HOUSE.GHS")), f, indent=1)
+        json.dump(rooms, f, indent=1)
 
 
 main()
