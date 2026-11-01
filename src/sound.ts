@@ -2,6 +2,7 @@ import type { SoundEvent } from "./sim";
 
 const SOUND_COUNT = 31;
 const BASS_BEAT_SOUND = 30;
+const BASS_BEAT_SECONDS = 3;
 
 // Confirmed by ear: crash, clock, battery, drip, guitar, startup, level, tick, shred, steam,
 // powerSwitch, zap, grease, ball, mirror, fan, toastDown, fire, balloonPop, boost, pop, bonus,
@@ -14,7 +15,7 @@ const SOUND_FOR_EVENT: Record<SoundEvent, number> = {
   timeBonus: 28,
   battery: 9,
   boost: 26,
-  bands: 9,
+  bands: 11,
   crash: 1,
   switch: 23,
   powerSwitch: 18,
@@ -31,8 +32,6 @@ const SOUND_FOR_EVENT: Record<SoundEvent, number> = {
   pop: 6,
   balloonPop: 19,
   travel: 12,
-  stairsUp: 12,
-  stairsDown: 10,
   mirror: 16,
   zap: 24,
   drip: 7,
@@ -53,7 +52,7 @@ export interface Sounds {
   play(event: SoundEvent): void;
   /** Flips sound on or off and returns whether it's now on. */
   toggle(): boolean;
-  /** Flips the looping bass beat on or off and returns whether it's now on. */
+  /** Flips the slow bass pulse on or off and returns whether it's now on. */
   toggleBassBeat(): boolean;
 }
 
@@ -63,18 +62,22 @@ export function createSounds(): Sounds {
   let levelSound: AudioBufferSourceNode | null = null;
   let enabled = true;
   let bassBeatWanted = false;
-  let bassBeat: AudioBufferSourceNode | null = null;
+  let bassBeatTimer: number | undefined;
+
+  const pulseBassBeat = (): void => {
+    const buffer = buffers.get(BASS_BEAT_SOUND);
+    if (!buffer) return;
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    source.connect(context.destination);
+    source.start();
+  };
 
   const updateBassBeat = (): void => {
-    bassBeat?.stop();
-    bassBeat = null;
-    const buffer = buffers.get(BASS_BEAT_SOUND);
-    if (!buffer || !enabled || !bassBeatWanted) return;
-    bassBeat = context.createBufferSource();
-    bassBeat.buffer = buffer;
-    bassBeat.loop = true;
-    bassBeat.connect(context.destination);
-    bassBeat.start();
+    window.clearInterval(bassBeatTimer);
+    if (!enabled || !bassBeatWanted) return;
+    pulseBassBeat();
+    bassBeatTimer = window.setInterval(pulseBassBeat, BASS_BEAT_SECONDS * 1000);
   };
 
   const start = (event: SoundEvent): AudioBufferSourceNode | null => {

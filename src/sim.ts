@@ -195,8 +195,6 @@ export type SoundEvent =
   | "balloonPop"
   | "boost"
   | "travel"
-  | "stairsUp"
-  | "stairsDown"
   | "mirror"
   | "zap"
   | "drip"
@@ -797,11 +795,11 @@ function pressSwitch(s: GameState, room: Room, o: RoomObject): void {
   s.sounds.push(o.type === OBJECT.powerSwitch ? "powerSwitch" : "switch");
 }
 
-function travel(s: GameState, house: Room[], roomIndex: number, x: number, y: number, sound: SoundEvent = "travel"): void {
+function travel(s: GameState, house: Room[], roomIndex: number, x: number, y: number, sound: SoundEvent | null = "travel"): void {
   s.linkCooldown = LINK_COOLDOWN_SECONDS;
   s.vx = 0;
   s.vy = 0;
-  s.sounds.push(sound);
+  if (sound) s.sounds.push(sound);
   changeRoom(s, house, roomIndex, x, y);
 }
 
@@ -811,7 +809,7 @@ function takeStairs(s: GameState, house: Room[], o: RoomObject): void {
   const arrival = destination.objects.find((other) => other.type === arrivalType && other.target === s.roomIndex);
   const x = arrival ? arrival.x + arrival.w / 2 - PLANE_W / 2 : START_X;
   const goingUp = o.type === OBJECT.stairsUp;
-  travel(s, house, o.target, x, goingUp ? STAIR_ARRIVAL_BOTTOM : STAIR_ARRIVAL_TOP, goingUp ? "stairsUp" : "stairsDown");
+  travel(s, house, o.target, x, goingUp ? STAIR_ARRIVAL_BOTTOM : STAIR_ARRIVAL_TOP, null);
   s.linkCooldown = STAIR_COOLDOWN_SECONDS;
   s.risingFromStairs = goingUp;
   s.vy = goingUp ? -LIFT_SPEED : FALL_SPEED;

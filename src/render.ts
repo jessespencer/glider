@@ -58,8 +58,9 @@ const VENT_CEILING: Rect = { x: 1, y: 97, w: 46, h: 13 };
 const DUCT: Rect = { x: 1, y: 111, w: 47, h: 13 };
 const TABLE_BASE: Rect = { x: 50, y: 24, w: 61, h: 20 };
 const FLAME_FRAMES: Rect[] = [
-  { x: 152, y: 192, w: 7, h: 9 },
-  { x: 152, y: 206, w: 7, h: 8 },
+  { x: 148, y: 189, w: 15, h: 12 },
+  { x: 147, y: 202, w: 16, h: 12 },
+  { x: 147, y: 215, w: 16, h: 12 },
 ];
 const SPARK_FRAMES: Rect[] = [
   { x: 168, y: 290, w: 26, h: 24 },
@@ -151,6 +152,22 @@ const WINDOW_FRAME = "#7a4a22";
 const WINDOW_FRAME_LIGHT = "#d08040";
 const WINDOW_BEVEL = "#909090";
 const LIGHTNING_SKY = "#9fb4e8";
+const NIGHT_SKY = "#14246a";
+const NIGHT_HORIZON = "#0a1238";
+const WINDOW_OPEN_RAISE = 26;
+const WINDOW_HORIZON_H = 8;
+const WINDOW_STARS = [
+  [0.08, 0.15],
+  [0.2, 0.42],
+  [0.31, 0.12],
+  [0.44, 0.33],
+  [0.53, 0.1],
+  [0.62, 0.5],
+  [0.9, 0.34],
+  [0.14, 0.62],
+  [0.38, 0.6],
+  [0.84, 0.64],
+] as const;
 const WINDOW_SHADOW = 4;
 const WINDOW_INSET = 12;
 const WINDOW_RAIL = 10;
@@ -173,8 +190,7 @@ const PLANE_SHADOW_ALPHA = 0.5;
 
 const DARK_ALPHA = 0.965;
 const DARK_LIGHTNING_ALPHA = 0.35;
-const CANDLE_LIGHT_RADIUS = 46;
-const CANDLE_FLAME_H = 8;
+const CANDLE_FLAME_H = 12;
 
 // Scoreboard layout, measured from the original game in room pixels.
 const HUD_NAME: Rect = { x: 3, y: 3, w: 159, h: 21 };
@@ -403,6 +419,40 @@ function drawPane(ctx: CanvasRenderingContext2D, pane: Rect, time: number): void
   ctx.restore();
 }
 
+/** The bottom sash pushed up, leaving a gap that looks straight out at the night. */
+function drawWindowOpening(ctx: CanvasRenderingContext2D, lower: Rect, time: number): void {
+  const opening: Rect = { ...lower, y: lower.y - WINDOW_OPEN_RAISE, h: lower.h + WINDOW_OPEN_RAISE };
+  ctx.fillStyle = WINDOW_FRAME_LIGHT;
+  ctx.fillRect(opening.x - 3, opening.y, opening.w + 6, opening.h + 3);
+
+  ctx.fillStyle = isLightningFlash(time) ? LIGHTNING_SKY : NIGHT_SKY;
+  ctx.fillRect(opening.x, opening.y, opening.w, opening.h);
+  ctx.fillStyle = NIGHT_HORIZON;
+  ctx.fillRect(opening.x, opening.y + opening.h - WINDOW_HORIZON_H, opening.w, WINDOW_HORIZON_H);
+
+  ctx.fillStyle = WHITE;
+  for (const [fx, fy] of WINDOW_STARS) {
+    ctx.fillRect(Math.round(opening.x + fx * opening.w), Math.round(opening.y + fy * opening.h), 1, 1);
+  }
+  ctx.fillStyle = YELLOW;
+  ctx.beginPath();
+  ctx.arc(opening.x + opening.w * 0.76, opening.y + 13, 6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = NIGHT_SKY;
+  ctx.beginPath();
+  ctx.arc(opening.x + opening.w * 0.76 + 3, opening.y + 11, 5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // The raised sash's bottom rail, sitting across the middle of the window.
+  const railY = opening.y - WINDOW_RAIL;
+  ctx.fillStyle = BLACK;
+  ctx.fillRect(opening.x - 7, railY - 1, opening.w + 14, WINDOW_RAIL + 2);
+  ctx.fillStyle = WINDOW_FRAME;
+  ctx.fillRect(opening.x - 6, railY, opening.w + 12, WINDOW_RAIL);
+  ctx.fillStyle = WINDOW_FRAME_LIGHT;
+  ctx.fillRect(opening.x - 6, railY, opening.w + 12, 1);
+}
+
 /** A double-hung wood window, like the original's, looking out on a stormy night. */
 function drawWindow(ctx: CanvasRenderingContext2D, o: RoomObject, time: number): void {
   ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
@@ -415,10 +465,16 @@ function drawWindow(ctx: CanvasRenderingContext2D, o: RoomObject, time: number):
 
   const paneW = o.w - WINDOW_INSET * 2;
   const paneH = Math.floor((o.h - WINDOW_INSET * 2 - WINDOW_RAIL) / 2);
-  drawPane(ctx, { x: o.x + WINDOW_INSET, y: o.y + WINDOW_INSET, w: paneW, h: paneH }, time);
-  drawPane(ctx, { x: o.x + WINDOW_INSET, y: o.y + WINDOW_INSET + paneH + WINDOW_RAIL, w: paneW, h: paneH }, time);
-  ctx.fillStyle = BLACK;
-  ctx.fillRect(o.x + 1, o.y + WINDOW_INSET + paneH + WINDOW_RAIL / 2, o.w - 2, 1);
+  const upper: Rect = { x: o.x + WINDOW_INSET, y: o.y + WINDOW_INSET, w: paneW, h: paneH };
+  const lower: Rect = { ...upper, y: upper.y + paneH + WINDOW_RAIL };
+  drawPane(ctx, upper, time);
+  if (o.on) {
+    drawWindowOpening(ctx, lower, time);
+  } else {
+    drawPane(ctx, lower, time);
+    ctx.fillStyle = BLACK;
+    ctx.fillRect(o.x + 1, upper.y + paneH + WINDOW_RAIL / 2, o.w - 2, 1);
+  }
 
   for (const y of [o.y - 3, o.y + o.h - 3]) {
     ctx.fillStyle = BLACK;
@@ -467,6 +523,10 @@ function drawGreaseSpill(ctx: CanvasRenderingContext2D, art: Art, jar: RoomObjec
 
 function frameAt(frames: Rect[], time: number, perSecond: number): Rect {
   return frames[Math.floor(time * perSecond) % frames.length];
+}
+
+function drawCandleFlame(ctx: CanvasRenderingContext2D, art: Art, candle: RoomObject, time: number): void {
+  drawSprite(ctx, art, frameAt(FLAME_FRAMES, time, 8), candle.x + candle.w / 2 - 8, candle.y - CANDLE_FLAME_H);
 }
 
 function drawMovingHazard(ctx: CanvasRenderingContext2D, art: Art, o: RoomObject, index: number, time: number): void {
@@ -535,7 +595,7 @@ function drawObject(ctx: CanvasRenderingContext2D, art: Art, s: GameState, o: Ro
       return;
     case OBJECT.candle:
       drawOnRect(ctx, art, OBJECT_SPRITES[o.type], o);
-      drawSprite(ctx, art, frameAt(FLAME_FRAMES, s.time, 8), o.x + o.w / 2 - 3, o.y - CANDLE_FLAME_H);
+      drawCandleFlame(ctx, art, o, s.time);
       return;
   }
 
@@ -615,14 +675,16 @@ function drawEnemies(ctx: CanvasRenderingContext2D, art: Art, s: GameState): voi
 function drawDarkness(ctx: CanvasRenderingContext2D, room: Room, time: number): void {
   const lit = isLightningFlash(time) && room.objects.some((o) => o.type === OBJECT.window);
   ctx.fillStyle = `rgba(0, 0, 0, ${lit ? DARK_LIGHTNING_ALPHA : DARK_ALPHA})`;
-  ctx.beginPath();
-  ctx.rect(0, 0, ROOM_W, ROOM_H);
-  for (const o of room.objects) {
-    if (o.type !== OBJECT.candle) continue;
-    ctx.moveTo(o.x + o.w / 2 + CANDLE_LIGHT_RADIUS, o.y);
-    ctx.arc(o.x + o.w / 2, o.y, CANDLE_LIGHT_RADIUS, 0, Math.PI * 2);
-  }
-  ctx.fill("evenodd");
+  ctx.fillRect(0, 0, ROOM_W, ROOM_H);
+}
+
+/** In the dark, only flames, moving dangers and light switches can be seen. */
+function drawThingsVisibleInDark(ctx: CanvasRenderingContext2D, art: Art, room: Room, time: number): void {
+  room.objects.forEach((o, index) => {
+    if (o.type === OBJECT.candle) drawCandleFlame(ctx, art, o, time);
+    else if (o.type === OBJECT.lightSwitch) drawOnRect(ctx, art, OBJECT_SPRITES[o.type], o);
+    else drawMovingHazard(ctx, art, o, index, time);
+  });
 }
 
 function planeFrame(s: GameState): Rect {
@@ -633,13 +695,6 @@ function planeFrame(s: GameState): Rect {
   }
   if (s.facing < 0) return s.vx > 0 ? PLANE_LEFT_TILTED_BACK : PLANE_LEFT;
   return s.vx < 0 ? PLANE_TILTED_BACK : PLANE_FORWARD;
-}
-
-/** The one thing that stays lit in a dark room, so the way out of the dark can be found. */
-function drawLightSwitches(ctx: CanvasRenderingContext2D, art: Art, room: Room): void {
-  for (const o of room.objects) {
-    if (o.type === OBJECT.lightSwitch) drawOnRect(ctx, art, OBJECT_SPRITES[o.type], o);
-  }
 }
 
 function isPlaneVisible(s: GameState): boolean {
@@ -841,12 +896,12 @@ export function render(
   drawBackground(ctx, art, room);
   room.objects.forEach((o, index) => drawObject(ctx, art, s, o, index));
   drawAir(ctx, art, room, s);
-  drawEnemies(ctx, art, s);
   drawPlaneShadow(ctx, s);
   if (isRoomDark(s, room)) {
     drawDarkness(ctx, room, s.time);
-    drawLightSwitches(ctx, art, room);
+    drawThingsVisibleInDark(ctx, art, room, s.time);
   }
+  drawEnemies(ctx, art, s);
   drawPlane(ctx, art, s);
   drawShredding(ctx, art, s);
   drawPopups(ctx, art, s);
