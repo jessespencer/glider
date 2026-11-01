@@ -17,7 +17,7 @@ const SOUND_FOR_EVENT: Record<SoundEvent, number> = {
   travel: 12,
   zap: 25,
   drip: 7,
-  guitar: 11,
+  guitar: 15,
   startup: 2,
   level: 29,
   tick: 21,
