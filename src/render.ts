@@ -11,7 +11,9 @@ import {
   ROOM_W,
   isAirOff,
   isCollected,
+  isExitDuct,
   isRoomDark,
+  isLightningFlash,
   movingHazard,
   shownScoreTens,
 } from "./sim";
@@ -23,6 +25,7 @@ export const PLANE_FORWARD: Rect = { x: 2, y: 3, w: 44, h: 16 };
 const PLANE_TILTED_BACK: Rect = { x: 1, y: 22, w: 46, h: 18 };
 const PLANE_ICON: Rect = { x: 1, y: 319, w: 33, h: 13 };
 const ROOM_NUMBER_PAPER: Rect = { x: 37, y: 319, w: 16, h: 21 };
+const ROOM_NUMBER_PAPER_BACK: Rect = { x: 55, y: 319, w: 16, h: 21 };
 const BAND_ICON: Rect = { x: 38, y: 302, w: 5, h: 13 };
 const BATTERY_ICON: Rect = { x: 47, y: 302, w: 7, h: 13 };
 const VENT: Rect = { x: 1, y: 84, w: 47, h: 12 };
@@ -98,11 +101,19 @@ const AIR_TILE = 8;
 const AIR_STEP_PIXELS = 2;
 const AIR_STEPS_PER_SECOND = 12;
 const FADE_IN_STEPS = 6;
+const WINDOW_FRAME = "#7a4a22";
+const WINDOW_FRAME_LIGHT = "#d08040";
+const WINDOW_BEVEL = "#909090";
+const LIGHTNING_SKY = "#9fb4e8";
+const WINDOW_SHADOW = 4;
+const WINDOW_INSET = 12;
+const WINDOW_RAIL = 10;
+const WINDOW_TRIM_H = 7;
 const BOOST_SHAKE = [-2, 1, 2, -1, 0, 2, -2];
 const BOOST_SHAKE_PER_SECOND = 30;
 const MIRROR_FRAME = 4;
-const MIRROR_PLANE_X = -20;
-const MIRROR_PLANE_Y = 12;
+const MIRROR_PLANE_X = -24;
+const MIRROR_PLANE_Y = -10;
 const MIRROR_PLANE_ALPHA = 0.5;
 
 // The plane's floor shadow, measured from the original game in room pixels.
@@ -115,7 +126,9 @@ const PLANE_SHADOW_RIGHT_SLOPE = 2.5;
 const PLANE_SHADOW_ALPHA = 0.5;
 
 const DARK_ALPHA = 0.93;
+const DARK_LIGHTNING_ALPHA = 0.35;
 const CANDLE_LIGHT_RADIUS = 46;
+const CANDLE_FLAME_H = 8;
 
 // Scoreboard layout, measured from the original game in room pixels.
 const HUD_NAME: Rect = { x: 3, y: 3, w: 159, h: 21 };
@@ -124,7 +137,12 @@ const HUD_LIVES: Rect = { x: 302, y: 3, w: 208, h: 21 };
 const HUD_PAPER_BORDER: Rect = { x: 165, y: 2, w: 18, h: 23 };
 const HUD_TEXT_Y = 7;
 const HUD_TEXT_INSET = 6;
-const HUD_ITEMS_X = 311;
+const HUD_PAPER_SPACING = 19;
+const HUD_ENERGY_ICON_X = 332;
+const HUD_BANDS_ICON_X = 370;
+const HUD_ITEM_GAP = 3;
+const HUD_ITEM_TEXT_Y = 5;
+const HUD_PANEL_CENTER_Y = 13;
 const HUD_LIVES_TEXT_RIGHT = 391;
 const HUD_LIVES_TEXT_MINIMUM = 3;
 const HUD_ICON_X = 397;
@@ -135,8 +153,11 @@ const RED = "#ff0000";
 const CYAN = "#00ffff";
 const WHITE = "#ffffff";
 const BLACK = "#000000";
+const YELLOW = "#ffff00";
+const GREEN = "#00ff00";
 
-const TIME_RESULT_Y = 30;
+const TIME_RESULT_Y = 107;
+const TIME_RESULT_H = 22;
 const TIME_RESULT_PADDING = 12;
 const TIME_RESULT_BLINK_SECONDS = 0.6;
 const TIME_RESULT_BLINKS_PER_SECOND = 8;
@@ -261,14 +282,65 @@ function drawTable(ctx: CanvasRenderingContext2D, art: Art, table: RoomObject): 
   ctx.fillRect(table.x, table.y + table.h - 2, table.w, 2);
 }
 
-function drawWindow(ctx: CanvasRenderingContext2D, o: RoomObject): void {
-  ctx.fillStyle = "#101010";
+function drawLightning(ctx: CanvasRenderingContext2D, pane: Rect): void {
+  ctx.fillStyle = LIGHTNING_SKY;
+  ctx.fillRect(pane.x, pane.y, pane.w, pane.h);
+  ctx.strokeStyle = WHITE;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(pane.x + pane.w * 0.62, pane.y);
+  ctx.lineTo(pane.x + pane.w * 0.46, pane.y + pane.h * 0.42);
+  ctx.lineTo(pane.x + pane.w * 0.58, pane.y + pane.h * 0.5);
+  ctx.lineTo(pane.x + pane.w * 0.4, pane.y + pane.h);
+  ctx.stroke();
+}
+
+function drawPane(ctx: CanvasRenderingContext2D, pane: Rect, time: number): void {
+  ctx.fillStyle = WINDOW_FRAME_LIGHT;
+  ctx.fillRect(pane.x - 6, pane.y - 6, pane.w + 12, pane.h + 12);
+  ctx.fillStyle = WINDOW_FRAME;
+  ctx.fillRect(pane.x - 5, pane.y - 5, pane.w + 10, pane.h + 10);
+  ctx.fillStyle = WINDOW_BEVEL;
+  ctx.fillRect(pane.x - 3, pane.y - 3, pane.w + 6, pane.h + 6);
+  ctx.fillStyle = WINDOW_FRAME_LIGHT;
+  ctx.fillRect(pane.x - 2, pane.y - 2, pane.w + 4, pane.h + 4);
+  ctx.fillStyle = BLACK;
+  ctx.fillRect(pane.x, pane.y, pane.w, pane.h);
+
+  if (!isLightningFlash(time)) return;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(pane.x, pane.y, pane.w, pane.h);
+  ctx.clip();
+  drawLightning(ctx, pane);
+  ctx.restore();
+}
+
+/** A double-hung wood window, like the original's, looking out on a stormy night. */
+function drawWindow(ctx: CanvasRenderingContext2D, o: RoomObject, time: number): void {
+  ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+  ctx.fillRect(o.x - WINDOW_SHADOW, o.y + WINDOW_SHADOW, o.w, o.h);
+
+  ctx.fillStyle = BLACK;
   ctx.fillRect(o.x, o.y, o.w, o.h);
-  ctx.fillStyle = "#88c8ff";
-  ctx.fillRect(o.x + 6, o.y + 6, o.w - 12, o.h - 12);
-  ctx.fillStyle = "#e8e8e0";
-  ctx.fillRect(o.x + o.w / 2 - 2, o.y + 6, 4, o.h - 12);
-  ctx.fillRect(o.x + 6, o.y + o.h / 2 - 2, o.w - 12, 4);
+  ctx.fillStyle = WINDOW_FRAME;
+  ctx.fillRect(o.x + 1, o.y + 1, o.w - 2, o.h - 2);
+
+  const paneW = o.w - WINDOW_INSET * 2;
+  const paneH = Math.floor((o.h - WINDOW_INSET * 2 - WINDOW_RAIL) / 2);
+  drawPane(ctx, { x: o.x + WINDOW_INSET, y: o.y + WINDOW_INSET, w: paneW, h: paneH }, time);
+  drawPane(ctx, { x: o.x + WINDOW_INSET, y: o.y + WINDOW_INSET + paneH + WINDOW_RAIL, w: paneW, h: paneH }, time);
+  ctx.fillStyle = BLACK;
+  ctx.fillRect(o.x + 1, o.y + WINDOW_INSET + paneH + WINDOW_RAIL / 2, o.w - 2, 1);
+
+  for (const y of [o.y - 3, o.y + o.h - 3]) {
+    ctx.fillStyle = BLACK;
+    ctx.fillRect(o.x - 5, y, o.w + 10, WINDOW_TRIM_H);
+    ctx.fillStyle = WINDOW_FRAME;
+    ctx.fillRect(o.x - 4, y + 1, o.w + 8, WINDOW_TRIM_H - 2);
+    ctx.fillStyle = WINDOW_FRAME_LIGHT;
+    ctx.fillRect(o.x - 4, y + 1, o.w + 8, 1);
+  }
 }
 
 function drawMirror(ctx: CanvasRenderingContext2D, art: Art, s: GameState, o: RoomObject): void {
@@ -321,8 +393,7 @@ function drawMovingHazard(ctx: CanvasRenderingContext2D, art: Art, o: RoomObject
   }
 }
 
-function drawObject(ctx: CanvasRenderingContext2D, art: Art, room: Room, s: GameState, o: RoomObject, index: number): void {
-  const airOff = isAirOff(s, room);
+function drawObject(ctx: CanvasRenderingContext2D, art: Art, s: GameState, o: RoomObject, index: number): void {
   if (ITEMS.includes(o.type) && isCollected(s, index)) return;
 
   switch (o.type) {
@@ -336,7 +407,7 @@ function drawObject(ctx: CanvasRenderingContext2D, art: Art, room: Room, s: Game
       drawCabinet(ctx, o);
       return;
     case OBJECT.window:
-      drawWindow(ctx, o);
+      drawWindow(ctx, o, s.time);
       return;
     case OBJECT.mirror:
       drawMirror(ctx, art, s, o);
@@ -352,25 +423,33 @@ function drawObject(ctx: CanvasRenderingContext2D, art: Art, room: Room, s: Game
       return;
     case OBJECT.ventUp:
       drawSprite(ctx, art, VENT, o.x, o.y);
-      if (!airOff) drawAirColumn(ctx, art, o.x + o.w / 2, o.amount, o.y, s.time, 1);
       return;
     case OBJECT.ventDown:
       drawSprite(ctx, art, VENT_CEILING, o.x, o.y);
-      if (!airOff) drawAirColumn(ctx, art, o.x + o.w / 2, o.y + o.h, o.amount, s.time, -1);
       return;
     case OBJECT.duct:
       drawSprite(ctx, art, DUCT, o.x, o.y);
-      if (o.on && !airOff) drawAirColumn(ctx, art, o.x + o.w / 2, o.y + o.h, o.amount, s.time, -1);
       return;
     case OBJECT.candle:
       drawOnRect(ctx, art, OBJECT_SPRITES[o.type], o);
-      drawSprite(ctx, art, frameAt(FLAME_FRAMES, s.time, 8), o.x + o.w / 2 - 3, o.y - 8);
+      drawSprite(ctx, art, frameAt(FLAME_FRAMES, s.time, 8), o.x + o.w / 2 - 3, o.y - CANDLE_FLAME_H);
       return;
   }
 
   const sprite = OBJECT_SPRITES[o.type];
   if (sprite) drawOnRect(ctx, art, sprite, o);
   drawMovingHazard(ctx, art, o, index, s.time);
+}
+
+/** Air runs in front of everything in the room, so paintings and furniture never hide it. */
+function drawAir(ctx: CanvasRenderingContext2D, art: Art, room: Room, s: GameState): void {
+  if (isAirOff(s, room)) return;
+  for (const o of room.objects) {
+    const centerX = o.x + o.w / 2;
+    if (o.type === OBJECT.ventUp) drawAirColumn(ctx, art, centerX, o.amount, o.y, s.time, 1);
+    if (o.type === OBJECT.candle) drawAirColumn(ctx, art, centerX, o.amount, o.y - CANDLE_FLAME_H, s.time, 1);
+    if (o.type === OBJECT.ventDown || isExitDuct(o)) drawAirColumn(ctx, art, centerX, o.y + o.h, o.amount, s.time, -1);
+  }
 }
 
 function drawEnemies(ctx: CanvasRenderingContext2D, art: Art, s: GameState): void {
@@ -384,8 +463,9 @@ function drawEnemies(ctx: CanvasRenderingContext2D, art: Art, s: GameState): voi
   for (const shot of s.shots) ctx.fillRect(Math.round(shot.x), Math.round(shot.y), 8, 2);
 }
 
-function drawDarkness(ctx: CanvasRenderingContext2D, room: Room): void {
-  ctx.fillStyle = `rgba(0, 0, 0, ${DARK_ALPHA})`;
+function drawDarkness(ctx: CanvasRenderingContext2D, room: Room, time: number): void {
+  const lit = isLightningFlash(time) && room.objects.some((o) => o.type === OBJECT.window);
+  ctx.fillStyle = `rgba(0, 0, 0, ${lit ? DARK_LIGHTNING_ALPHA : DARK_ALPHA})`;
   ctx.beginPath();
   ctx.rect(0, 0, ROOM_W, ROOM_H);
   for (const o of room.objects) {
@@ -469,20 +549,33 @@ function drawPanel(ctx: CanvasRenderingContext2D, r: Rect): void {
   ctx.fillRect(r.x + r.w - 3, r.y + 2, 1, r.h - 4);
 }
 
+/** Each digit gets its own notebook page, with the binding holes meeting in the middle. */
+function drawRoomNumber(ctx: CanvasRenderingContext2D, art: Art, roomNumber: number): void {
+  [...String(roomNumber)].forEach((digit, index) => {
+    const x = HUD_PAPER_BORDER.x + index * HUD_PAPER_SPACING;
+    const { y, w, h } = HUD_PAPER_BORDER;
+    ctx.fillStyle = BLACK;
+    ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = WHITE;
+    ctx.fillRect(x + 1, y + 1, w - 2, h - 2);
+    drawSprite(ctx, art, index === 0 ? ROOM_NUMBER_PAPER : ROOM_NUMBER_PAPER_BACK, x + 1, y + 1);
+    art.font.draw(ctx, digit, x + (index === 0 ? 5 : 8), HUD_TEXT_Y, BLACK);
+  });
+}
+
+/** A count sitting right up against its icon, both centered in the scoreboard panel. */
+function drawHudItem(ctx: CanvasRenderingContext2D, art: Art, count: string, color: string, icon: Rect, iconX: number): void {
+  const textX = iconX - HUD_ITEM_GAP - art.font.measure(count);
+  art.font.draw(ctx, count, textX, HUD_ITEM_TEXT_Y, color);
+  drawSprite(ctx, art, icon, iconX, HUD_PANEL_CENTER_Y - Math.floor(icon.h / 2));
+}
+
 function drawHud(ctx: CanvasRenderingContext2D, art: Art, s: GameState, room: Room): void {
-  const roomNumber = s.roomIndex + 1;
   const { font } = art;
   drawPanel(ctx, HUD_NAME);
   font.draw(ctx, room.name, HUD_NAME.x + HUD_TEXT_INSET, HUD_TEXT_Y, RED);
 
-  const paper = HUD_PAPER_BORDER;
-  ctx.fillStyle = BLACK;
-  ctx.fillRect(paper.x, paper.y, paper.w, paper.h);
-  ctx.fillStyle = WHITE;
-  ctx.fillRect(paper.x + 1, paper.y + 1, paper.w - 2, paper.h - 2);
-  drawSprite(ctx, art, ROOM_NUMBER_PAPER, paper.x + 1, paper.y + 1);
-  const number = String(roomNumber);
-  font.draw(ctx, number, paper.x + Math.round((paper.w - 4 - font.measure(number)) / 2), HUD_TEXT_Y, BLACK);
+  drawRoomNumber(ctx, art, s.roomIndex + 1);
 
   drawPanel(ctx, HUD_SCORE);
   font.draw(ctx, String(shownScoreTens(s)), HUD_SCORE.x + HUD_TEXT_INSET, HUD_TEXT_Y, CYAN);
@@ -492,16 +585,8 @@ function drawHud(ctx: CanvasRenderingContext2D, art: Art, s: GameState, room: Ro
     const lives = String(s.lives);
     font.draw(ctx, lives, HUD_LIVES_TEXT_RIGHT - font.measure(lives), HUD_TEXT_Y, RED);
   }
-  let itemX = HUD_ITEMS_X;
-  if (s.bands > 0) {
-    drawSprite(ctx, art, BAND_ICON, itemX, HUD_ICON_Y - 1);
-    font.draw(ctx, String(s.bands), itemX + 8, HUD_TEXT_Y, WHITE);
-    itemX += 28;
-  }
-  if (s.energy > 0) {
-    drawSprite(ctx, art, BATTERY_ICON, itemX, HUD_ICON_Y - 1);
-    font.draw(ctx, String(Math.ceil(s.energy)), itemX + 10, HUD_TEXT_Y, WHITE);
-  }
+  if (s.energy > 0) drawHudItem(ctx, art, String(Math.ceil(s.energy)), YELLOW, BATTERY_ICON, HUD_ENERGY_ICON_X);
+  if (s.bands > 0) drawHudItem(ctx, art, String(s.bands), GREEN, BAND_ICON, HUD_BANDS_ICON_X);
   const icons = Math.min(HUD_MAX_ICONS, s.lives);
   for (let i = 0; i < icons; i++) {
     // Lives are lost from the left, so the remaining icons stay at the panel's right end.
@@ -516,11 +601,11 @@ function drawTimeResult(ctx: CanvasRenderingContext2D, art: Art, s: GameState): 
   const blinking = result.age < TIME_RESULT_BLINK_SECONDS;
   if (blinking && Math.floor(result.age * TIME_RESULT_BLINKS_PER_SECOND) % 2 === 1) return;
 
-  const text = result.made ? `Time bonus +${result.points}` : "Too slow!";
+  const text = `Time Bonus = ${result.points}`;
   const w = art.font.measure(text) + TIME_RESULT_PADDING * 2;
-  const box: Rect = { x: Math.round((ROOM_W - w) / 2), y: TIME_RESULT_Y, w, h: 26 };
+  const box: Rect = { x: Math.round((ROOM_W - w) / 2), y: TIME_RESULT_Y, w, h: TIME_RESULT_H };
   drawPanel(ctx, box);
-  art.font.draw(ctx, text, box.x + TIME_RESULT_PADDING, box.y + 5, result.made ? CYAN : RED);
+  art.font.draw(ctx, text, box.x + TIME_RESULT_PADDING, box.y + 3, YELLOW);
 }
 
 function drawMessage(ctx: CanvasRenderingContext2D, art: Art, s: GameState): void {
@@ -564,10 +649,11 @@ export function render(
   ctx.rect(0, 0, ROOM_W, ROOM_H);
   ctx.clip();
   drawBackground(ctx, art, room);
-  room.objects.forEach((o, index) => drawObject(ctx, art, room, s, o, index));
+  room.objects.forEach((o, index) => drawObject(ctx, art, s, o, index));
+  drawAir(ctx, art, room, s);
   drawEnemies(ctx, art, s);
   drawPlaneShadow(ctx, s);
-  if (isRoomDark(s, room)) drawDarkness(ctx, room);
+  if (isRoomDark(s, room)) drawDarkness(ctx, room, s.time);
   drawPlane(ctx, art, s);
   drawPopups(ctx, art, s);
   drawHud(ctx, art, s, room);

@@ -2,8 +2,8 @@ import type { SoundEvent } from "./sim";
 
 const SOUND_COUNT = 31;
 
-// Confirmed by ear: crash, clock, battery, drip, guitar, startup, level, tick. The rest are matched by
-// length and character; open ?sounds to audition them and correct this table.
+// Confirmed by ear: crash, clock, battery, drip, guitar, startup, level, tick, shred, steam,
+// powerSwitch. The rest are matched by length and character; open ?sounds to audition them.
 const SOUND_FOR_EVENT: Record<SoundEvent, number> = {
   clock: 5,
   paper: 16,
@@ -12,10 +12,14 @@ const SOUND_FOR_EVENT: Record<SoundEvent, number> = {
   bands: 8,
   crash: 1,
   switch: 19,
+  powerSwitch: 18,
+  shred: 20,
+  steam: 25,
+  thunder: 17,
   fire: 4,
   pop: 24,
   travel: 12,
-  zap: 25,
+  zap: 14,
   drip: 7,
   guitar: 15,
   startup: 2,

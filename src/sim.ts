@@ -71,6 +71,9 @@ const MIN_X = 2;
 const MAX_X = ROOM_W - PLANE_W / 2;
 const LEFT_EXIT_X = -PLANE_W / 2;
 const LINK_COOLDOWN_SECONDS = 1.5;
+const STRINGS_TOP_X = 47;
+const STRINGS_BOTTOM_X = 30;
+const STRINGS_REACH = 8;
 const RESPAWN_SEARCH_STEP = 8;
 const RESPAWN_CLEAR_Y = 130;
 const RESPAWN_VENT_TOP = 60;
@@ -93,6 +96,9 @@ const TARGET_SECONDS_PER_ITEM = 3;
 const TIME_BONUS_PER_SECOND = 10;
 const TIME_BONUS_MINIMUM = 50;
 const TIME_RESULT_SECONDS = 1.6;
+
+const LIGHTNING_PERIOD_SECONDS = 7;
+const LIGHTNING_SECONDS = 0.45;
 
 const SCORE_TICKER_PER_SECOND = 400;
 const POPUP_SECONDS = 1;
@@ -138,6 +144,10 @@ export type SoundEvent =
   | "bands"
   | "crash"
   | "switch"
+  | "powerSwitch"
+  | "shred"
+  | "steam"
+  | "thunder"
   | "fire"
   | "pop"
   | "travel"
@@ -368,6 +378,18 @@ function burst(time: number, period: number, active: number, offset: number): nu
   return t < active ? t / active : null;
 }
 
+/** Progress through a lightning strike (0 to 1), or null between strikes. */
+export function lightningProgress(time: number): number | null {
+  return burst(time, LIGHTNING_PERIOD_SECONDS, LIGHTNING_SECONDS, 0);
+}
+
+/** A strike is two quick flashes. */
+export function isLightningFlash(time: number): boolean {
+  const progress = lightningProgress(time);
+  if (progress === null) return false;
+  return progress < 0.2 || (progress > 0.45 && progress < 0.7);
+}
+
 const TICKS_PER_SECOND = 30;
 
 /**
@@ -467,11 +489,11 @@ function steer(s: GameState, input: Input, dt: number): void {
   s.vx = Math.sign(s.vx) * slowed;
 }
 
-function startCrash(s: GameState): void {
+function startCrash(s: GameState, sound: SoundEvent = "crash"): void {
   s.phase = "crashing";
   s.boosting = false;
   s.crashTime = 0;
-  s.sounds.push("crash");
+  s.sounds.push(sound);
 }
 
 const SOLID_TYPES: number[] = [
@@ -484,9 +506,8 @@ const SOLID_TYPES: number[] = [
   OBJECT.fishbowl,
   OBJECT.kettle,
   OBJECT.wastebasket,
-  OBJECT.shredder,
 ];
-const VERTICAL_DANGER_TYPES: number[] = [OBJECT.ball, OBJECT.toaster, OBJECT.fishbowl, OBJECT.drip];
+const VERTICAL_DANGER_TYPES: number[] = [OBJECT.ball, OBJECT.toaster, OBJECT.fishbowl, OBJECT.drip, OBJECT.shredder];
 
 /** Whether a plane dropped in at the top of the room here is safe and stays in this room. */
 function isSafeAtTop(room: Room, x: number): boolean {
@@ -571,7 +592,7 @@ function pressSwitch(s: GameState, room: Room, o: RoomObject): void {
       else s.flipped.add(key);
     }
   }
-  s.sounds.push("switch");
+  s.sounds.push(o.type === OBJECT.powerSwitch ? "powerSwitch" : "switch");
 }
 
 function travel(s: GameState, house: Room[], roomIndex: number, x: number, y: number): void {
@@ -638,6 +659,13 @@ function checkLinks(s: GameState, house: Room[], room: Room): boolean {
   return false;
 }
 
+/** The strings run down the neck at a slant, so the strum follows that line, not the outline. */
+function isOverStrings(s: GameState, guitar: RoomObject): boolean {
+  const along = (s.y + PLANE_H / 2 - guitar.y) / guitar.h;
+  const stringsX = guitar.x + STRINGS_TOP_X + (STRINGS_BOTTOM_X - STRINGS_TOP_X) * along;
+  return Math.abs(s.x + PLANE_W / 2 - stringsX) <= STRINGS_REACH;
+}
+
 function checkObjects(s: GameState, room: Room): void {
   const touchingNow = new Set<number>();
   room.objects.forEach((o, index) => {
@@ -654,6 +682,10 @@ function checkObjects(s: GameState, room: Room): void {
       return;
     }
     switch (o.type) {
+      case OBJECT.shredder:
+        // Switched off, it's just a box the plane can pass.
+        if (isObjectOn(s, o, index)) startCrash(s, "shred");
+        break;
       case OBJECT.candle:
         if (overlaps(s, candleFlame(o))) startCrash(s);
         break;
@@ -666,6 +698,7 @@ function checkObjects(s: GameState, room: Room): void {
         if (!isCollected(s, index)) takeItem(s, o, index);
         break;
       case OBJECT.guitar:
+        if (!isOverStrings(s, o)) break;
         touchingNow.add(index);
         if (!s.touching.has(index)) s.sounds.push("guitar");
         break;
@@ -739,11 +772,16 @@ function fireBand(s: GameState, input: Input): void {
   s.firing = input.fire;
 }
 
-function soundDrips(s: GameState, room: Room, dt: number): void {
+function soundBursts(s: GameState, room: Room, dt: number): void {
   room.objects.forEach((o, index) => {
-    if (o.type !== OBJECT.drip) return;
-    if (movingHazard(o, index, s.time) && !movingHazard(o, index, s.time - dt)) s.sounds.push("drip");
+    if (o.type !== OBJECT.drip && o.type !== OBJECT.kettle) return;
+    if (!movingHazard(o, index, s.time) || movingHazard(o, index, s.time - dt)) return;
+    s.sounds.push(o.type === OBJECT.drip ? "drip" : "steam");
   });
+  const hasWindow = room.objects.some((o) => o.type === OBJECT.window);
+  if (hasWindow && lightningProgress(s.time) !== null && lightningProgress(s.time - dt) === null) {
+    s.sounds.push("thunder");
+  }
 }
 
 function changeRoomAtEdges(s: GameState, house: Room[], room: Room): boolean {
@@ -799,7 +837,7 @@ function fly(s: GameState, house: Room[], input: Input, dt: number): void {
   }
   if (checkLinks(s, house, room)) return;
   checkObjects(s, room);
-  soundDrips(s, room, dt);
+  soundBursts(s, room, dt);
   moveEnemies(s, dt);
   moveShots(s, dt);
 }
