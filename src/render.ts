@@ -101,8 +101,9 @@ const FADE_IN_STEPS = 6;
 const BOOST_SHAKE = [-2, 1, 2, -1, 0, 2, -2];
 const BOOST_SHAKE_PER_SECOND = 30;
 const MIRROR_FRAME = 4;
-const MIRROR_PLANE_X = 33;
-const MIRROR_PLANE_Y = 34;
+const MIRROR_PLANE_X = -20;
+const MIRROR_PLANE_Y = 12;
+const MIRROR_PLANE_ALPHA = 0.5;
 
 // The plane's floor shadow, measured from the original game in room pixels.
 const PLANE_SHADOW_Y = 326;
@@ -285,7 +286,7 @@ function drawMirror(ctx: CanvasRenderingContext2D, art: Art, s: GameState, o: Ro
   ctx.beginPath();
   ctx.rect(o.x + MIRROR_FRAME, o.y + MIRROR_FRAME, o.w - MIRROR_FRAME * 2, o.h - MIRROR_FRAME * 2);
   ctx.clip();
-  ctx.globalAlpha = fadeInAlpha(s);
+  ctx.globalAlpha = fadeInAlpha(s) * MIRROR_PLANE_ALPHA;
   drawSprite(ctx, art, planeFrame(s), s.x + MIRROR_PLANE_X, s.y + MIRROR_PLANE_Y);
   ctx.restore();
 }
