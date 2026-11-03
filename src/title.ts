@@ -12,10 +12,14 @@ const DISSOLVE_SECONDS = FADE_IN_SECONDS * 0.7;
 const DISSOLVE_CELL = 16;
 
 const TIP_SECONDS = 3.2;
-// The tips sit in the window's top-right corner.
-const TIP_BOX: Rect = { x: ROOM_W - 8 - 168, y: 10, w: 168, h: 96 };
-const TIP_PADDING = 8;
+// The tips sit in the window's top-right corner, the same distance from the top and the right edge.
+const TIP_MARGIN = 18;
 const TIP_LINE_HEIGHT = 16;
+const TIP_SPRITE_GAP = 10;
+/** Capitals start this many rows down the font's cell, so the visible top lines up with the margin. */
+const FONT_CAP_TOP = 3;
+/** Each glyph's width includes a blank column on its right, which shouldn't count as margin. */
+const FONT_TRAILING_SPACE = 1;
 const PROMPT_Y = 320;
 const PROMPT_BLINK_SECONDS = 0.6;
 
@@ -104,16 +108,15 @@ function buildBackdrop(art: Art): HTMLCanvasElement {
 
 function drawTip(ctx: CanvasRenderingContext2D, art: Art, time: number): void {
   const tip = TIPS[Math.floor(time / TIP_SECONDS) % TIPS.length];
-  const box = TIP_BOX;
-  ctx.fillStyle = "#000000";
-  ctx.fillRect(box.x, box.y, box.w, box.h);
+  // Sized to this tip's own widest line, so its gap to the right edge always matches the top.
+  const width = Math.max(...tip.lines.map((line) => art.font.measure(line)));
+  const left = ROOM_W - TIP_MARGIN - width + FONT_TRAILING_SPACE;
+  const top = TIP_MARGIN - FONT_CAP_TOP;
   tip.lines.forEach((line, index) => {
-    const y = box.y + TIP_PADDING - 3 + index * TIP_LINE_HEIGHT;
-    art.font.draw(ctx, line, box.x + TIP_PADDING, y, index === 0 ? WHITE : CYAN);
+    art.font.draw(ctx, line, left, top + index * TIP_LINE_HEIGHT, index === 0 ? WHITE : CYAN);
   });
-  const spriteTop = box.y + TIP_PADDING + TIP_LINE_HEIGHT * 3;
-  const spriteRoom = box.y + box.h - TIP_PADDING - spriteTop;
-  drawSprite(ctx, art, tip.sprite, box.x + (box.w - tip.sprite.w) / 2, spriteTop + (spriteRoom - tip.sprite.h) / 2);
+  const spriteTop = top + TIP_LINE_HEIGHT * tip.lines.length + TIP_SPRITE_GAP;
+  drawSprite(ctx, art, tip.sprite, left + (width - tip.sprite.w) / 2, spriteTop);
 }
 
 function drawPrompt(ctx: CanvasRenderingContext2D, art: Art, time: number): void {
