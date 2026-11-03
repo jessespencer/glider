@@ -12,7 +12,7 @@ Arrow keys fly, Space fires rubber bands, Enter burns battery power to zoom forw
 - **Glider for Windows**: Windows programming by Gregg Bieser, Brass Ring Software. Published by Casady & Greene and Powerhouse Entertainment.
 - The graphics, sounds and rooms come from Glider for Windows and belong to their creators. The scoreboard lettering uses Wine's copy of the Windows bitmap fonts.
 
-This tribute isn't affiliated with or endorsed by John Calhoun or Soft Dorothy LLC. Play the real thing: [Glider for Mac](https://apps.apple.com/us/app/glider/id482536700?mt=12), or Glider Classic for iPhone and iPad.
+This tribute isn't affiliated with or endorsed by John Calhoun or Soft Dorothy LLC. Play the real thing: [Glider for Mac](https://apps.apple.com/us/app/glider/id482536700?mt=12), or Glider Classic for iPhone and iPad. Calhoun's own [Glider 4.0 source](https://github.com/softdorothy/Glider4) is under the MIT License.
 
 Built by [Jesse Destroys](https://jessedestroys.com/).
 

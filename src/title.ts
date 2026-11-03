@@ -16,6 +16,14 @@ const TIP_X = 306;
 const TIP_Y = 34;
 const TIP_LINE_HEIGHT = 16;
 const PROMPT_Y = 320;
+const CONTROLS_BOX: Rect = { x: 8, y: 262, w: 160, h: 72 };
+const CONTROLS_LINE_HEIGHT = 16;
+/** The bitmap font has no arrow glyphs, so the keys are spelled out. */
+const CONTROLS: [string, string][] = [
+  ["Left / Right", "fly"],
+  ["Space", "rubber bands"],
+  ["Enter", "battery boost"],
+];
 const PROMPT_BLINK_SECONDS = 0.6;
 
 const WORDMARK_SCALE = 5;
@@ -78,6 +86,21 @@ function drawWordmark(ctx: CanvasRenderingContext2D, art: Art): number {
   return WORDMARK_X + scaledW;
 }
 
+/** A small key guide for anyone who has never played, set over the empty corner of the desk. */
+function drawControls(ctx: CanvasRenderingContext2D, art: Art): void {
+  const box = CONTROLS_BOX;
+  ctx.fillStyle = "#000000";
+  ctx.fillRect(box.x, box.y, box.w, box.h);
+  ctx.strokeStyle = CYAN;
+  ctx.strokeRect(box.x + 0.5, box.y + 0.5, box.w - 1, box.h - 1);
+  art.font.draw(ctx, "How to play", box.x + 8, box.y + 5, WHITE);
+  CONTROLS.forEach(([key, action], index) => {
+    const y = box.y + 5 + (index + 1) * CONTROLS_LINE_HEIGHT;
+    art.font.draw(ctx, key, box.x + 8, y, CYAN);
+    art.font.draw(ctx, action, box.x + box.w - 8 - art.font.measure(action), y, WHITE);
+  });
+}
+
 function buildBackdrop(art: Art): HTMLCanvasElement {
   const [canvas, ctx] = makeCanvas(ROOM_W, ROOM_H);
   ctx.fillStyle = "#000000";
@@ -92,6 +115,8 @@ function buildBackdrop(art: Art): HTMLCanvasElement {
   art.font.draw(ctx, "2026", 0, 0, CYAN);
   ctx.restore();
   art.font.draw(ctx, "A tribute to Glider 4.0", WORDMARK_X, WORDMARK_Y + 88, CYAN);
+
+  drawControls(ctx, art);
 
   ctx.strokeStyle = CYAN;
   ctx.lineWidth = 1;
@@ -111,7 +136,7 @@ function drawTip(ctx: CanvasRenderingContext2D, art: Art, time: number): void {
 
 function drawPrompt(ctx: CanvasRenderingContext2D, art: Art, time: number): void {
   if (Math.floor(time / PROMPT_BLINK_SECONDS) % 2 === 1) return;
-  const text = "Press any key to fly";
+  const text = "Press any key to go";
   const x = Math.round(ROOM_W / 2 - art.font.measure(text) / 2);
   ctx.fillStyle = "#000000";
   ctx.fillRect(x - 8, PROMPT_Y - 3, art.font.measure(text) + 16, 20);

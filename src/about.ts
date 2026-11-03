@@ -51,7 +51,9 @@ const CONTENT = `
     <h3>Play the real thing</h3>
     <p>John Calhoun still makes Glider: get it for the
       <a href="https://apps.apple.com/us/app/glider/id482536700?mt=12" target="_blank" rel="noopener">Mac</a>,
-      or <i>Glider Classic</i> for iPhone and iPad.</p>
+      or <i>Glider Classic</i> for iPhone and iPad. His own
+      <a href="https://github.com/softdorothy/Glider4" target="_blank" rel="noopener">Glider 4.0 source</a>
+      is open under the MIT License.</p>
 
     <h3>This tribute</h3>
     <p>Built by <a href="https://jessedestroys.com/" target="_blank" rel="noopener">Jesse Destroys</a>.
