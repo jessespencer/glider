@@ -1,0 +1,6228 @@
+[
+ {
+  "name": "Welcome...",
+  "backPict": 200,
+  "tiles": [
+   7,
+   0,
+   5,
+   0,
+   0,
+   1,
+   2,
+   3
+  ],
+  "leftOpen": false,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 69,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 186,
+    "y": 223,
+    "w": 170,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 421,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 43,
+    "x": 186,
+    "y": 165,
+    "w": 45,
+    "h": 58,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 322,
+    "y": 194,
+    "w": 32,
+    "h": 29,
+    "amount": 500,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Top of the reading list",
+  "backPict": 200,
+  "tiles": [
+   4,
+   0,
+   0,
+   0,
+   0,
+   0,
+   5,
+   3
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 60,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 181,
+    "y": 112,
+    "w": 187,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 183,
+    "y": 58,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 394,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 336,
+    "y": 84,
+    "w": 32,
+    "h": 29,
+    "amount": 600,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 245,
+    "y": 58,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 40,
+    "x": 45,
+    "y": 80,
+    "w": 102,
+    "h": 93,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Under Me!",
+  "backPict": 200,
+  "tiles": [
+   5,
+   2,
+   0,
+   0,
+   1,
+   4,
+   0,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 53,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 209,
+    "y": 178,
+    "w": 199,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 345,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 208,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 453,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 211,
+    "y": 149,
+    "w": 32,
+    "h": 29,
+    "amount": 700,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Looking at you...",
+  "backPict": 200,
+  "tiles": [
+   4,
+   1,
+   0,
+   0,
+   0,
+   0,
+   2,
+   2
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 47,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 121,
+    "y": 220,
+    "w": 191,
+    "h": 98,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 337,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 206,
+    "y": 87,
+    "w": 100,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 20,
+    "x": 291,
+    "y": 63,
+    "w": 18,
+    "h": 26,
+    "amount": 50,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 41,
+    "x": 13,
+    "y": 61,
+    "w": 169,
+    "h": 146,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "You're invited...",
+  "backPict": 200,
+  "tiles": [
+   0,
+   5,
+   0,
+   0,
+   0,
+   4,
+   0,
+   3
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 2,
+  "enemyCount": 1,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 45,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 159,
+    "y": 218,
+    "w": 166,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 423,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 157,
+    "y": 189,
+    "w": 32,
+    "h": 29,
+    "amount": 800,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 260,
+    "y": 37,
+    "w": 123,
+    "h": 66,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 37,
+    "x": 20,
+    "y": 73,
+    "w": 121,
+    "h": 151,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Jane be nimble...",
+  "backPict": 200,
+  "tiles": [
+   2,
+   3,
+   0,
+   0,
+   0,
+   0,
+   5,
+   2
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 1,
+  "enemyCount": 1,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 38,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 104,
+    "y": 224,
+    "w": 280,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 11,
+    "x": 215,
+    "y": 203,
+    "w": 32,
+    "h": 21,
+    "amount": 57,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 434,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 264,
+    "y": 170,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Hmm... a tall cabinet",
+  "backPict": 200,
+  "tiles": [
+   2,
+   2,
+   2,
+   1,
+   0,
+   0,
+   0,
+   4
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 58,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 10,
+    "x": 37,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 57,
+    "extra": 7,
+    "on": false,
+    "target": 6
+   },
+   {
+    "type": 10,
+    "x": 388,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 109,
+    "extra": 7,
+    "on": true,
+    "target": 6
+   },
+   {
+    "type": 4,
+    "x": 167,
+    "y": 120,
+    "w": 190,
+    "h": 198,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 446,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 291,
+    "y": 99,
+    "w": 48,
+    "h": 21,
+    "amount": 1500,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 19,
+    "x": 256,
+    "y": 88,
+    "w": 32,
+    "h": 32,
+    "amount": 1500,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Timing is the key...",
+  "backPict": 201,
+  "tiles": [
+   5,
+   5,
+   3,
+   0,
+   1,
+   0,
+   0,
+   5
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 1,
+    "x": 154,
+    "y": 237,
+    "w": 130,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 268,
+    "y": 144,
+    "w": 150,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 270,
+    "y": 116,
+    "w": 32,
+    "h": 29,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 25,
+    "x": 255,
+    "y": 191,
+    "w": 32,
+    "h": 25,
+    "amount": 300,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 84,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 446,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 352,
+    "y": 91,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 29,
+    "x": 296,
+    "y": 153,
+    "w": 64,
+    "h": 170,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 19,
+    "x": 353,
+    "y": 57,
+    "w": 64,
+    "h": 32,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "More enemies...",
+  "backPict": 201,
+  "tiles": [
+   2,
+   5,
+   0,
+   0,
+   4,
+   5,
+   0,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 1,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 9,
+    "x": 191,
+    "y": 24,
+    "w": 48,
+    "h": 12,
+    "amount": 193,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 56,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 382,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 111,
+    "y": 141,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 251,
+    "y": 263,
+    "w": 100,
+    "h": 60,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 114,
+    "y": 194,
+    "w": 136,
+    "h": 131,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 19,
+    "x": 376,
+    "y": 35,
+    "w": 64,
+    "h": 32,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 219,
+    "y": 165,
+    "w": 32,
+    "h": 29,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Up a Down Staircase",
+  "backPict": 201,
+  "tiles": [
+   5,
+   0,
+   0,
+   0,
+   0,
+   0,
+   3,
+   5
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 1,
+  "enemyCount": 1,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 44,
+    "x": 224,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 18,
+    "extra": 0,
+    "on": false,
+    "target": 17
+   },
+   {
+    "type": 8,
+    "x": 31,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 275,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 108,
+    "y": 228,
+    "w": 111,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Still on this floor...",
+  "backPict": 201,
+  "tiles": [
+   5,
+   0,
+   0,
+   5,
+   1,
+   0,
+   5,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": true,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 2,
+    "x": 93,
+    "y": 140,
+    "w": 102,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 303,
+    "y": 129,
+    "w": 185,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 333,
+    "y": 76,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 20,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 412,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 161,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 206,
+    "y": 149,
+    "w": 32,
+    "h": 29,
+    "amount": 2000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 138,
+    "y": 221,
+    "w": 129,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 24,
+    "x": 119,
+    "y": 97,
+    "w": 18,
+    "h": 26,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 439,
+    "y": 109,
+    "w": 48,
+    "h": 21,
+    "amount": 2000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Deeper still...",
+  "backPict": 201,
+  "tiles": [
+   5,
+   0,
+   0,
+   0,
+   0,
+   4,
+   0,
+   6
+  ],
+  "leftOpen": true,
+  "rightOpen": false,
+  "enemyKind": 1,
+  "enemyCount": 2,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 45,
+    "x": 149,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 15,
+    "extra": 0,
+    "on": false,
+    "target": 14
+   },
+   {
+    "type": 8,
+    "x": 24,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 40,
+    "x": 26,
+    "y": 69,
+    "w": 102,
+    "h": 93,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "What, a bombshelter?",
+  "backPict": 202,
+  "tiles": [
+   7,
+   4,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0
+  ],
+  "leftOpen": false,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 4,
+    "x": 34,
+    "y": 216,
+    "w": 62,
+    "h": 109,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 13,
+    "x": 51,
+    "y": 163,
+    "w": 35,
+    "h": 54,
+    "amount": 157,
+    "extra": 0,
+    "on": true,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 127,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 174,
+    "y": 264,
+    "w": 307,
+    "h": 64,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 18,
+    "x": 171,
+    "y": 236,
+    "w": 32,
+    "h": 29,
+    "amount": 478,
+    "extra": 0,
+    "on": true,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 431,
+    "y": 236,
+    "w": 32,
+    "h": 29,
+    "amount": 3000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 381,
+    "y": 244,
+    "w": 48,
+    "h": 21,
+    "amount": 2000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 20,
+    "x": 359,
+    "y": 240,
+    "w": 18,
+    "h": 26,
+    "amount": 80,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 21,
+    "x": 321,
+    "y": 242,
+    "w": 32,
+    "h": 23,
+    "amount": 4,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 289,
+    "y": 236,
+    "w": 32,
+    "h": 29,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 20,
+    "x": 271,
+    "y": 240,
+    "w": 18,
+    "h": 26,
+    "amount": 40,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Power station...",
+  "backPict": 202,
+  "tiles": [
+   2,
+   3,
+   5,
+   5,
+   5,
+   5,
+   5,
+   5
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 1,
+  "enemyCount": 1,
+  "startsDark": true,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 25,
+    "x": 220,
+    "y": 139,
+    "w": 32,
+    "h": 25,
+    "amount": 80,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 24,
+    "x": 293,
+    "y": 139,
+    "w": 18,
+    "h": 26,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 50,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 25,
+    "x": 352,
+    "y": 141,
+    "w": 32,
+    "h": 25,
+    "amount": 120,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 10,
+    "x": 46,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 98,
+    "extra": 14,
+    "on": false,
+    "target": 13
+   },
+   {
+    "type": 8,
+    "x": 435,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 10,
+    "x": 398,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 141,
+    "extra": 14,
+    "on": true,
+    "target": 13
+   }
+  ]
+ },
+ {
+  "name": "This is the basement",
+  "backPict": 202,
+  "tiles": [
+   5,
+   1,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 44,
+    "x": 155,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 12,
+    "extra": 0,
+    "on": false,
+    "target": 11
+   },
+   {
+    "type": 1,
+    "x": 25,
+    "y": 263,
+    "w": 125,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 11,
+    "x": 111,
+    "y": 243,
+    "w": 32,
+    "h": 21,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 421,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 332,
+    "y": 167,
+    "w": 81,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 12,
+    "x": 371,
+    "y": 113,
+    "w": 35,
+    "h": 55,
+    "amount": 140,
+    "extra": 0,
+    "on": true,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Nothing here...",
+  "backPict": 202,
+  "tiles": [
+   0,
+   0,
+   0,
+   4,
+   3,
+   0,
+   0,
+   1
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": true,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 24,
+    "x": 172,
+    "y": 205,
+    "w": 18,
+    "h": 26,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 32,
+    "x": 237,
+    "y": 192,
+    "w": 16,
+    "h": 13,
+    "amount": 320,
+    "extra": 120,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 13,
+    "y": 230,
+    "w": 100,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 13,
+    "x": 12,
+    "y": 177,
+    "w": 35,
+    "h": 54,
+    "amount": 512,
+    "extra": 0,
+    "on": true,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "The Looking Glass",
+  "backPict": 202,
+  "tiles": [
+   0,
+   3,
+   0,
+   0,
+   4,
+   0,
+   0,
+   6
+  ],
+  "leftOpen": true,
+  "rightOpen": false,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 31,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 5,
+    "x": 382,
+    "y": 111,
+    "w": 48,
+    "h": 135,
+    "amount": 24,
+    "extra": 0,
+    "on": false,
+    "target": 23
+   },
+   {
+    "type": 41,
+    "x": 359,
+    "y": 84,
+    "w": 92,
+    "h": 186,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Welcome, 2nd Floor",
+  "backPict": 201,
+  "tiles": [
+   7,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "leftOpen": false,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 45,
+    "x": 187,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 10,
+    "extra": 0,
+    "on": false,
+    "target": 9
+   },
+   {
+    "type": 8,
+    "x": 248,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 42,
+    "x": 97,
+    "y": 247,
+    "w": 63,
+    "h": 71,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 358,
+    "y": 230,
+    "w": 100,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 426,
+    "y": 202,
+    "w": 32,
+    "h": 29,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 19,
+    "x": 377,
+    "y": 240,
+    "w": 64,
+    "h": 32,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 40,
+    "x": 384,
+    "y": 66,
+    "w": 102,
+    "h": 93,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Zis Room",
+  "backPict": 201,
+  "tiles": [
+   0,
+   3,
+   0,
+   0,
+   0,
+   4,
+   0,
+   2
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 11,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 10,
+    "x": 67,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 305,
+    "extra": 19,
+    "on": true,
+    "target": 18
+   },
+   {
+    "type": 2,
+    "x": 155,
+    "y": 151,
+    "w": 100,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 326,
+    "y": 161,
+    "w": 62,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 325,
+    "y": 107,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 262,
+    "y": 223,
+    "w": 129,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 257,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 255,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 405,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 19,
+    "x": 324,
+    "y": 171,
+    "w": 32,
+    "h": 32,
+    "amount": 5000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 208,
+    "y": 131,
+    "w": 48,
+    "h": 21,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 19,
+    "x": 258,
+    "y": 142,
+    "w": 64,
+    "h": 32,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "This Old House...",
+  "backPict": 206,
+  "tiles": [
+   0,
+   1,
+   2,
+   0,
+   4,
+   5,
+   0,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 38,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 10,
+    "x": 37,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 57,
+    "extra": 19,
+    "on": false,
+    "target": 18
+   },
+   {
+    "type": 4,
+    "x": 162,
+    "y": 199,
+    "w": 113,
+    "h": 124,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 155,
+    "y": 171,
+    "w": 32,
+    "h": 29,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 277,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 32,
+    "x": 386,
+    "y": 38,
+    "w": 16,
+    "h": 13,
+    "amount": 318,
+    "extra": 120,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "The North Room",
+  "backPict": 206,
+  "tiles": [
+   6,
+   7,
+   2,
+   0,
+   3,
+   0,
+   1,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 60,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 200,
+    "y": 96,
+    "w": 161,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 28,
+    "x": 158,
+    "y": 197,
+    "w": 18,
+    "h": 26,
+    "amount": 5,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 157,
+    "y": 185,
+    "w": 100,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 27,
+    "x": 260,
+    "y": 184,
+    "w": 64,
+    "h": 24,
+    "amount": 0,
+    "extra": 0,
+    "on": true,
+    "target": -1
+   },
+   {
+    "type": 21,
+    "x": 198,
+    "y": 73,
+    "w": 32,
+    "h": 23,
+    "amount": 3,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 376,
+    "y": 75,
+    "w": 104,
+    "h": 108,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 363,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 210,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 19,
+    "x": 213,
+    "y": 193,
+    "w": 32,
+    "h": 32,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Windtunnels",
+  "backPict": 204,
+  "tiles": [
+   0,
+   0,
+   2,
+   0,
+   4,
+   0,
+   6,
+   3
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 63,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 173,
+    "y": 115,
+    "w": 249,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 13,
+    "x": 182,
+    "y": 189,
+    "w": 35,
+    "h": 54,
+    "amount": 512,
+    "extra": 0,
+    "on": true,
+    "target": -1
+   },
+   {
+    "type": 12,
+    "x": 388,
+    "y": 60,
+    "w": 35,
+    "h": 55,
+    "amount": 227,
+    "extra": 0,
+    "on": true,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 345,
+    "y": 94,
+    "w": 48,
+    "h": 21,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 443,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 28,
+    "x": 410,
+    "y": 126,
+    "w": 18,
+    "h": 26,
+    "amount": 4,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 172,
+    "y": 242,
+    "w": 191,
+    "h": 85,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Noisy Kids!",
+  "backPict": 204,
+  "tiles": [
+   1,
+   3,
+   1,
+   6,
+   5,
+   0,
+   2,
+   4
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 42,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 146,
+    "y": 222,
+    "w": 124,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 34,
+    "x": 207,
+    "y": 190,
+    "w": 32,
+    "h": 32,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 34,
+    "x": 290,
+    "y": 293,
+    "w": 32,
+    "h": 32,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 375,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "LeadFish",
+  "backPict": 204,
+  "tiles": [
+   1,
+   7,
+   4,
+   0,
+   0,
+   0,
+   6,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 58,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 110,
+    "y": 161,
+    "w": 111,
+    "h": 160,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 226,
+    "y": 226,
+    "w": 100,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 420,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 21,
+    "x": 294,
+    "y": 204,
+    "w": 32,
+    "h": 23,
+    "amount": 4,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 35,
+    "x": 226,
+    "y": 198,
+    "w": 32,
+    "h": 29,
+    "amount": 44,
+    "extra": 120,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 177,
+    "y": 141,
+    "w": 48,
+    "h": 21,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 113,
+    "y": 107,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Air Steps",
+  "backPict": 201,
+  "tiles": [
+   0,
+   0,
+   4,
+   2,
+   1,
+   3,
+   0,
+   2
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 41,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 215,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 57,
+    "y": 188,
+    "w": 170,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 181,
+    "y": 161,
+    "w": 32,
+    "h": 29,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 241,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 128,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 302,
+    "y": 231,
+    "w": 110,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 32,
+    "x": 215,
+    "y": 38,
+    "w": 16,
+    "h": 13,
+    "amount": 324,
+    "extra": 120,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 459,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Fan Fun!",
+  "backPict": 206,
+  "tiles": [
+   4,
+   0,
+   2,
+   3,
+   5,
+   1,
+   0,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 2,
+    "x": 32,
+    "y": 186,
+    "w": 262,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 13,
+    "x": 42,
+    "y": 133,
+    "w": 35,
+    "h": 54,
+    "amount": 341,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 373,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 154,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 28,
+    "x": 120,
+    "y": 99,
+    "w": 18,
+    "h": 26,
+    "amount": 2,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 12,
+    "x": 458,
+    "y": 202,
+    "w": 35,
+    "h": 55,
+    "amount": 88,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 431,
+    "y": 256,
+    "w": 80,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 28,
+    "x": 486,
+    "y": 156,
+    "w": 18,
+    "h": 26,
+    "amount": 5,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 65,
+    "y": 307,
+    "w": 48,
+    "h": 21,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 112,
+    "y": 307,
+    "w": 48,
+    "h": 21,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Stormy Weather...",
+  "backPict": 204,
+  "tiles": [
+   2,
+   6,
+   5,
+   7,
+   0,
+   5,
+   0,
+   2
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": true,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 13,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 227,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 86,
+    "y": 198,
+    "w": 129,
+    "h": 123,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 92,
+    "y": 170,
+    "w": 32,
+    "h": 29,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 24,
+    "x": 385,
+    "y": 162,
+    "w": 18,
+    "h": 26,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 438,
+    "y": 157,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 372,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 217,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 375,
+    "y": 210,
+    "w": 134,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 9,
+    "x": 277,
+    "y": 24,
+    "w": 48,
+    "h": 12,
+    "amount": 305,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 37,
+    "x": 224,
+    "y": 84,
+    "w": 130,
+    "h": 152,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Slippery when greasy...",
+  "backPict": 207,
+  "tiles": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   1,
+   6,
+   3
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 24,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 84,
+    "y": 188,
+    "w": 309,
+    "h": 133,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 18,
+    "x": 82,
+    "y": 159,
+    "w": 32,
+    "h": 29,
+    "amount": 392,
+    "extra": 0,
+    "on": true,
+    "target": -1
+   },
+   {
+    "type": 34,
+    "x": 202,
+    "y": 157,
+    "w": 32,
+    "h": 32,
+    "amount": 96,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 397,
+    "y": 170,
+    "w": 32,
+    "h": 29,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 424,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 40,
+    "x": 259,
+    "y": 62,
+    "w": 102,
+    "h": 93,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Turn me on...",
+  "backPict": 207,
+  "tiles": [
+   4,
+   6,
+   7,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": true,
+  "objects": [
+   {
+    "type": 29,
+    "x": 131,
+    "y": 151,
+    "w": 64,
+    "h": 170,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 26,
+    "x": 215,
+    "y": 170,
+    "w": 18,
+    "h": 27,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 41,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 269,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 354,
+    "y": 84,
+    "w": 65,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 21,
+    "x": 357,
+    "y": 62,
+    "w": 32,
+    "h": 23,
+    "amount": 2,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Finally!!!",
+  "backPict": 208,
+  "tiles": [
+   0,
+   3,
+   4,
+   6,
+   6,
+   1,
+   5,
+   7
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 35,
+    "x": 168,
+    "y": 171,
+    "w": 32,
+    "h": 29,
+    "amount": 44,
+    "extra": 80,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 279,
+    "y": 62,
+    "w": 207,
+    "h": 79,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 327,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 162,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 19,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 25,
+    "x": 244,
+    "y": 159,
+    "w": 32,
+    "h": 25,
+    "amount": 80,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 41,
+    "x": 88,
+    "y": 58,
+    "w": 91,
+    "h": 102,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Tempted...",
+  "backPict": 200,
+  "tiles": [
+   4,
+   0,
+   0,
+   0,
+   0,
+   1,
+   5,
+   3
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 44,
+    "x": 60,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 34,
+    "extra": 0,
+    "on": false,
+    "target": 33
+   },
+   {
+    "type": 4,
+    "x": 237,
+    "y": 71,
+    "w": 124,
+    "h": 254,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 417,
+    "y": 221,
+    "w": 94,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 365,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 416,
+    "y": 201,
+    "w": 48,
+    "h": 21,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 21,
+    "x": 480,
+    "y": 199,
+    "w": 32,
+    "h": 23,
+    "amount": 5,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 105,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Look Familiar?",
+  "backPict": 200,
+  "tiles": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   2,
+   5,
+   6
+  ],
+  "leftOpen": true,
+  "rightOpen": false,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 44,
+    "x": 30,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 35,
+    "extra": 0,
+    "on": false,
+    "target": 34
+   },
+   {
+    "type": 8,
+    "x": 91,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 217,
+    "y": 219,
+    "w": 209,
+    "h": 101,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 11,
+    "x": 222,
+    "y": 199,
+    "w": 32,
+    "h": 21,
+    "amount": 74,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 20,
+    "x": 408,
+    "y": 195,
+    "w": 18,
+    "h": 26,
+    "amount": 40,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 426,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "You found me!",
+  "backPict": 201,
+  "tiles": [
+   7,
+   5,
+   3,
+   1,
+   5,
+   0,
+   0,
+   5
+  ],
+  "leftOpen": false,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 59,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 10,
+    "x": 56,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 305,
+    "extra": 34,
+    "on": false,
+    "target": 33
+   },
+   {
+    "type": 8,
+    "x": 438,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 321,
+    "y": 137,
+    "w": 110,
+    "h": 187,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 202,
+    "y": 238,
+    "w": 114,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 319,
+    "y": 109,
+    "w": 32,
+    "h": 29,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 204,
+    "y": 218,
+    "w": 48,
+    "h": 21,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Welcome to Floor 3",
+  "backPict": 201,
+  "tiles": [
+   1,
+   5,
+   0,
+   0,
+   0,
+   0,
+   0,
+   5
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 1,
+  "enemyCount": 2,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 45,
+    "x": 139,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 31,
+    "extra": 0,
+    "on": false,
+    "target": 30
+   },
+   {
+    "type": 8,
+    "x": 209,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 10,
+    "x": 65,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 305,
+    "extra": 34,
+    "on": true,
+    "target": 33
+   },
+   {
+    "type": 2,
+    "x": 321,
+    "y": 188,
+    "w": 100,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 390,
+    "y": 160,
+    "w": 32,
+    "h": 29,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 447,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "A toaster?  Here?",
+  "backPict": 201,
+  "tiles": [
+   3,
+   0,
+   1,
+   0,
+   0,
+   0,
+   4,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 45,
+    "x": 5,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 32,
+    "extra": 0,
+    "on": false,
+    "target": 31
+   },
+   {
+    "type": 8,
+    "x": 182,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 33,
+    "x": 379,
+    "y": 304,
+    "w": 38,
+    "h": 27,
+    "amount": 114,
+    "extra": 120,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 332,
+    "y": 105,
+    "w": 158,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 410,
+    "y": 173,
+    "w": 32,
+    "h": 29,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 460,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 201,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 410,
+    "y": 201,
+    "w": 100,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 343,
+    "y": 52,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "The galley...",
+  "backPict": 209,
+  "tiles": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 1,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 54,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 25,
+    "x": 128,
+    "y": 175,
+    "w": 32,
+    "h": 25,
+    "amount": 120,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 354,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 146,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 335,
+    "y": 25,
+    "w": 122,
+    "h": 90,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 36,
+    "x": 436,
+    "y": 172,
+    "w": 41,
+    "h": 30,
+    "amount": 120,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 148,
+    "y": 25,
+    "w": 61,
+    "h": 56,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Wow - High Shelf!",
+  "backPict": 205,
+  "tiles": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   1,
+   2,
+   3
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 2,
+    "x": 132,
+    "y": 95,
+    "w": 316,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 73,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 76,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 18,
+    "x": 134,
+    "y": 67,
+    "w": 32,
+    "h": 29,
+    "amount": 448,
+    "extra": 0,
+    "on": true,
+    "target": -1
+   },
+   {
+    "type": 10,
+    "x": 256,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 73,
+    "extra": 37,
+    "on": true,
+    "target": 36
+   },
+   {
+    "type": 17,
+    "x": 321,
+    "y": 75,
+    "w": 48,
+    "h": 21,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 368,
+    "y": 67,
+    "w": 32,
+    "h": 29,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 21,
+    "x": 399,
+    "y": 73,
+    "w": 32,
+    "h": 23,
+    "amount": 5,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 326,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 96,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 20,
+    "x": 302,
+    "y": 70,
+    "w": 18,
+    "h": 26,
+    "amount": 40,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 177,
+    "y": 42,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Love these Candles...",
+  "backPict": 200,
+  "tiles": [
+   2,
+   4,
+   0,
+   3,
+   0,
+   0,
+   5,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 53,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 305,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 115,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 136,
+    "y": 169,
+    "w": 145,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 136,
+    "y": 90,
+    "w": 333,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 141,
+    "y": 115,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 359,
+    "y": 225,
+    "w": 134,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 11,
+    "x": 393,
+    "y": 204,
+    "w": 32,
+    "h": 21,
+    "amount": 116,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 248,
+    "y": 141,
+    "w": 32,
+    "h": 29,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 180,
+    "y": 37,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 423,
+    "y": 70,
+    "w": 48,
+    "h": 21,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Windy Room...",
+  "backPict": 201,
+  "tiles": [
+   0,
+   3,
+   0,
+   0,
+   0,
+   0,
+   4,
+   1
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 2,
+  "enemyCount": 2,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 11,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 446,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 243,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 9,
+    "x": 103,
+    "y": 24,
+    "w": 48,
+    "h": 12,
+    "amount": 325,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 9,
+    "x": 150,
+    "y": 24,
+    "w": 48,
+    "h": 12,
+    "amount": 325,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 9,
+    "x": 197,
+    "y": 24,
+    "w": 48,
+    "h": 12,
+    "amount": 325,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 9,
+    "x": 287,
+    "y": 24,
+    "w": 48,
+    "h": 12,
+    "amount": 325,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 9,
+    "x": 335,
+    "y": 24,
+    "w": 48,
+    "h": 12,
+    "amount": 325,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 9,
+    "x": 383,
+    "y": 24,
+    "w": 48,
+    "h": 12,
+    "amount": 325,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 40,
+    "x": 212,
+    "y": 68,
+    "w": 102,
+    "h": 93,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Monty Hall",
+  "backPict": 201,
+  "tiles": [
+   5,
+   3,
+   0,
+   5,
+   0,
+   4,
+   5,
+   6
+  ],
+  "leftOpen": true,
+  "rightOpen": false,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 10,
+    "x": 35,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 305,
+    "extra": 31,
+    "on": true,
+    "target": 30
+   },
+   {
+    "type": 10,
+    "x": 127,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 66,
+    "extra": 36,
+    "on": false,
+    "target": 35
+   },
+   {
+    "type": 10,
+    "x": 221,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 67,
+    "extra": 37,
+    "on": false,
+    "target": 36
+   },
+   {
+    "type": 10,
+    "x": 313,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 64,
+    "extra": 41,
+    "on": false,
+    "target": 40
+   },
+   {
+    "type": 10,
+    "x": 398,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 57,
+    "extra": 40,
+    "on": false,
+    "target": 39
+   },
+   {
+    "type": 8,
+    "x": 126,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 218,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 311,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 396,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 11,
+    "y": 213,
+    "w": 65,
+    "h": 111,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 29,
+    "y": 193,
+    "w": 48,
+    "h": 21,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Welcome to Part 2!",
+  "backPict": 203,
+  "tiles": [
+   7,
+   2,
+   0,
+   0,
+   1,
+   3,
+   4,
+   5
+  ],
+  "leftOpen": false,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 2,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 10,
+    "x": 41,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 238,
+    "extra": 1,
+    "on": true,
+    "target": 40
+   },
+   {
+    "type": 8,
+    "x": 102,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 6,
+    "y": 241,
+    "w": 83,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 43,
+    "x": 17,
+    "y": 184,
+    "w": 45,
+    "h": 58,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Nippon 2",
+  "backPict": 203,
+  "tiles": [
+   4,
+   5,
+   0,
+   1,
+   0,
+   0,
+   2,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 2,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 1,
+    "x": 71,
+    "y": 214,
+    "w": 295,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 15,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 18,
+    "x": 73,
+    "y": 186,
+    "w": 32,
+    "h": 29,
+    "amount": 365,
+    "extra": 0,
+    "on": true,
+    "target": -1
+   },
+   {
+    "type": 34,
+    "x": 333,
+    "y": 184,
+    "w": 32,
+    "h": 32,
+    "amount": 144,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 437,
+    "y": 86,
+    "w": 72,
+    "h": 173,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 442,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 275,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 34,
+    "x": 299,
+    "y": 184,
+    "w": 32,
+    "h": 32,
+    "amount": 132,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "North by NorthWest",
+  "backPict": 200,
+  "tiles": [
+   2,
+   5,
+   0,
+   0,
+   0,
+   0,
+   3,
+   4
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 1,
+  "enemyCount": 1,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 5,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 57,
+    "y": 132,
+    "w": 122,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 28,
+    "x": 196,
+    "y": 117,
+    "w": 18,
+    "h": 26,
+    "amount": 8,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 189,
+    "y": 171,
+    "w": 114,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 234,
+    "y": 117,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 310,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 370,
+    "y": 141,
+    "w": 38,
+    "h": 189,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 27,
+    "x": 410,
+    "y": 160,
+    "w": 64,
+    "h": 24,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 479,
+    "y": 45,
+    "w": 33,
+    "h": 153,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 373,
+    "y": 112,
+    "w": 32,
+    "h": 29,
+    "amount": 2000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Up we go ... again.",
+  "backPict": 200,
+  "tiles": [
+   5,
+   4,
+   0,
+   0,
+   0,
+   2,
+   2,
+   6
+  ],
+  "leftOpen": true,
+  "rightOpen": false,
+  "enemyKind": 1,
+  "enemyCount": 2,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 44,
+    "x": 173,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 5,
+    "extra": 0,
+    "on": false,
+    "target": 44
+   },
+   {
+    "type": 8,
+    "x": 44,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 243,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 374,
+    "y": 225,
+    "w": 100,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 21,
+    "x": 373,
+    "y": 202,
+    "w": 32,
+    "h": 23,
+    "amount": 4,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Up, up, up, up, up!",
+  "backPict": 201,
+  "tiles": [
+   7,
+   0,
+   0,
+   0,
+   0,
+   3,
+   0,
+   6
+  ],
+  "leftOpen": false,
+  "rightOpen": false,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 45,
+    "x": 267,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 4,
+    "extra": 0,
+    "on": false,
+    "target": 43
+   },
+   {
+    "type": 44,
+    "x": 83,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 6,
+    "extra": 0,
+    "on": false,
+    "target": 45
+   },
+   {
+    "type": 8,
+    "x": 170,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Attica?",
+  "backPict": 205,
+  "tiles": [
+   7,
+   0,
+   0,
+   0,
+   1,
+   3,
+   4,
+   0
+  ],
+  "leftOpen": false,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 2,
+  "startsDark": true,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 45,
+    "x": 124,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 5,
+    "extra": 0,
+    "on": false,
+    "target": 44
+   },
+   {
+    "type": 8,
+    "x": 303,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 24,
+    "x": 396,
+    "y": 177,
+    "w": 18,
+    "h": 26,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Is this the attic?",
+  "backPict": 205,
+  "tiles": [
+   2,
+   2,
+   2,
+   3,
+   2,
+   2,
+   2,
+   2
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": true,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 57,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 24,
+    "x": 295,
+    "y": 162,
+    "w": 18,
+    "h": 26,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 178,
+    "y": 162,
+    "w": 69,
+    "h": 154,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 348,
+    "y": 64,
+    "w": 76,
+    "h": 131,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 362,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 212,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 37,
+    "x": 33,
+    "y": 86,
+    "w": 130,
+    "h": 148,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Oh no ... no way!",
+  "backPict": 205,
+  "tiles": [
+   3,
+   2,
+   2,
+   2,
+   2,
+   2,
+   2,
+   2
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 57,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 272,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 162,
+    "y": 37,
+    "w": 66,
+    "h": 184,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 354,
+    "y": 145,
+    "w": 64,
+    "h": 173,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 34,
+    "x": 270,
+    "y": 301,
+    "w": 32,
+    "h": 32,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 375,
+    "y": 125,
+    "w": 48,
+    "h": 21,
+    "amount": 10000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "So, what's up?",
+  "backPict": 205,
+  "tiles": [
+   4,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   6
+  ],
+  "leftOpen": true,
+  "rightOpen": false,
+  "enemyKind": 0,
+  "enemyCount": 3,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 44,
+    "x": 290,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 10,
+    "extra": 0,
+    "on": false,
+    "target": 49
+   },
+   {
+    "type": 8,
+    "x": 379,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 81,
+    "y": 216,
+    "w": 94,
+    "h": 104,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 25,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 136,
+    "y": 119,
+    "w": 104,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 136,
+    "y": 65,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Very Dark!",
+  "backPict": 200,
+  "tiles": [
+   7,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "leftOpen": false,
+  "rightOpen": true,
+  "enemyKind": 1,
+  "enemyCount": 1,
+  "startsDark": true,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 45,
+    "x": 67,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 9,
+    "extra": 0,
+    "on": false,
+    "target": 48
+   },
+   {
+    "type": 8,
+    "x": 118,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 238,
+    "y": 196,
+    "w": 229,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 34,
+    "x": 434,
+    "y": 165,
+    "w": 32,
+    "h": 32,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 11,
+    "x": 308,
+    "y": 175,
+    "w": 32,
+    "h": 21,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 269,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 226,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 419,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 226,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 19,
+    "x": 362,
+    "y": 218,
+    "w": 64,
+    "h": 32,
+    "amount": 4000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "What you can't see...",
+  "backPict": 200,
+  "tiles": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 2,
+  "startsDark": true,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 2,
+    "x": 17,
+    "y": 214,
+    "w": 199,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 294,
+    "y": 175,
+    "w": 158,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 11,
+    "x": 114,
+    "y": 194,
+    "w": 32,
+    "h": 21,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 32,
+    "x": 248,
+    "y": 34,
+    "w": 16,
+    "h": 13,
+    "amount": 320,
+    "extra": 120,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 346,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 200,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 455,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 11,
+    "x": 298,
+    "y": 155,
+    "w": 32,
+    "h": 21,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 368,
+    "y": 39,
+    "w": 81,
+    "h": 129,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "This Dark!",
+  "backPict": 200,
+  "tiles": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   6
+  ],
+  "leftOpen": true,
+  "rightOpen": false,
+  "enemyKind": 1,
+  "enemyCount": 1,
+  "startsDark": true,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 44,
+    "x": 276,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 13,
+    "extra": 0,
+    "on": false,
+    "target": 52
+   },
+   {
+    "type": 4,
+    "x": 10,
+    "y": 228,
+    "w": 260,
+    "h": 92,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 343,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 11,
+    "x": 50,
+    "y": 208,
+    "w": 32,
+    "h": 21,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 34,
+    "x": 211,
+    "y": 197,
+    "w": 32,
+    "h": 32,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 34,
+    "x": 243,
+    "y": 197,
+    "w": 32,
+    "h": 32,
+    "amount": 69,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Higher still!",
+  "backPict": 201,
+  "tiles": [
+   7,
+   0,
+   5,
+   0,
+   0,
+   0,
+   5,
+   0
+  ],
+  "leftOpen": false,
+  "rightOpen": true,
+  "enemyKind": 1,
+  "enemyCount": 2,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 45,
+    "x": 188,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 12,
+    "extra": 0,
+    "on": false,
+    "target": 51
+   },
+   {
+    "type": 8,
+    "x": 259,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 420,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Not Amazing...",
+  "backPict": 201,
+  "tiles": [
+   5,
+   4,
+   1,
+   0,
+   0,
+   5,
+   3,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 2,
+  "enemyCount": 1,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 20,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 248,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 227,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 72,
+    "y": 143,
+    "w": 85,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 139,
+    "y": 201,
+    "w": 168,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 72,
+    "y": 266,
+    "w": 94,
+    "h": 56,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 230,
+    "y": 147,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 217,
+    "y": 38,
+    "w": 111,
+    "h": 86,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 339,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 408,
+    "y": 149,
+    "w": 88,
+    "h": 172,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 403,
+    "y": 120,
+    "w": 32,
+    "h": 29,
+    "amount": 10000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 71,
+    "y": 238,
+    "w": 32,
+    "h": 29,
+    "amount": 5000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 25,
+    "x": 255,
+    "y": 233,
+    "w": 32,
+    "h": 25,
+    "amount": 90,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 19,
+    "x": 248,
+    "y": 122,
+    "w": 32,
+    "h": 32,
+    "amount": 10000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "More Entropy...",
+  "backPict": 201,
+  "tiles": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 1,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 10,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 444,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 257,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 10,
+    "x": 11,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 79,
+    "extra": 15,
+    "on": false,
+    "target": 54
+   },
+   {
+    "type": 2,
+    "x": 120,
+    "y": 146,
+    "w": 41,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 120,
+    "y": 244,
+    "w": 41,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 64,
+    "y": 38,
+    "w": 56,
+    "h": 230,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 433,
+    "y": 36,
+    "w": 71,
+    "h": 203,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 13,
+    "x": 122,
+    "y": 93,
+    "w": 35,
+    "h": 54,
+    "amount": 333,
+    "extra": 0,
+    "on": true,
+    "target": -1
+   },
+   {
+    "type": 13,
+    "x": 120,
+    "y": 191,
+    "w": 35,
+    "h": 54,
+    "amount": 313,
+    "extra": 0,
+    "on": true,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 391,
+    "y": 184,
+    "w": 41,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 12,
+    "x": 396,
+    "y": 130,
+    "w": 35,
+    "h": 55,
+    "amount": 217,
+    "extra": 0,
+    "on": true,
+    "target": -1
+   },
+   {
+    "type": 10,
+    "x": 215,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 325,
+    "extra": 15,
+    "on": true,
+    "target": 54
+   },
+   {
+    "type": 8,
+    "x": 258,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 9,
+    "x": 307,
+    "y": 24,
+    "w": 48,
+    "h": 12,
+    "amount": 305,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Complete Me",
+  "backPict": 201,
+  "tiles": [
+   3,
+   0,
+   0,
+   4,
+   0,
+   0,
+   3,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 22,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 98,
+    "y": 122,
+    "w": 64,
+    "h": 205,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 271,
+    "y": 78,
+    "w": 66,
+    "h": 140,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 25,
+    "x": 281,
+    "y": 245,
+    "w": 32,
+    "h": 25,
+    "amount": 120,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 340,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 305,
+    "y": 50,
+    "w": 32,
+    "h": 29,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 1,
+    "x": 411,
+    "y": 218,
+    "w": 100,
+    "h": 9,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 3,
+    "x": 413,
+    "y": 164,
+    "w": 64,
+    "h": 55,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 9,
+    "x": 174,
+    "y": 24,
+    "w": 48,
+    "h": 12,
+    "amount": 305,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 5,
+    "x": 472,
+    "y": 286,
+    "w": 34,
+    "h": 34,
+    "amount": 23,
+    "extra": 0,
+    "on": false,
+    "target": 62
+   }
+  ]
+ },
+ {
+  "name": "Double Jeapordy!",
+  "backPict": 201,
+  "tiles": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 78,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 419,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 163,
+    "y": 205,
+    "w": 98,
+    "h": 119,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 319,
+    "y": 34,
+    "w": 80,
+    "h": 170,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 160,
+    "y": 35,
+    "w": 101,
+    "h": 87,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 34,
+    "x": 176,
+    "y": 175,
+    "w": 32,
+    "h": 32,
+    "amount": 126,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 32,
+    "x": 214,
+    "y": 121,
+    "w": 16,
+    "h": 13,
+    "amount": 203,
+    "extra": 60,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 10,
+    "x": 9,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 305,
+    "extra": 17,
+    "on": true,
+    "target": 56
+   },
+   {
+    "type": 40,
+    "x": 31,
+    "y": 69,
+    "w": 102,
+    "h": 93,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Who knows...The end?",
+  "backPict": 201,
+  "tiles": [
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   6
+  ],
+  "leftOpen": true,
+  "rightOpen": false,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 44,
+    "x": 268,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 19,
+    "extra": 0,
+    "on": false,
+    "target": 58
+   },
+   {
+    "type": 8,
+    "x": 280,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Congratulations...",
+  "backPict": 200,
+  "tiles": [
+   7,
+   2,
+   0,
+   0,
+   0,
+   5,
+   0,
+   3
+  ],
+  "leftOpen": false,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 45,
+    "x": 101,
+    "y": 54,
+    "w": 161,
+    "h": 254,
+    "amount": 18,
+    "extra": 0,
+    "on": false,
+    "target": 57
+   },
+   {
+    "type": 8,
+    "x": 176,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 406,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 37,
+    "x": 363,
+    "y": 79,
+    "w": 139,
+    "h": 168,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Don't even think...",
+  "backPict": 200,
+  "tiles": [
+   3,
+   0,
+   0,
+   1,
+   2,
+   0,
+   0,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 294,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 2,
+    "x": 407,
+    "y": 178,
+    "w": 52,
+    "h": 7,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 161,
+    "y": 121,
+    "w": 57,
+    "h": 201,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 409,
+    "y": 158,
+    "w": 48,
+    "h": 21,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 99,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 27,
+    "x": 88,
+    "y": 154,
+    "w": 64,
+    "h": 24,
+    "amount": 0,
+    "extra": 0,
+    "on": true,
+    "target": -1
+   },
+   {
+    "type": 28,
+    "x": 112,
+    "y": 187,
+    "w": 18,
+    "h": 26,
+    "amount": 6,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 351,
+    "y": 121,
+    "w": 57,
+    "h": 201,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "I said...",
+  "backPict": 200,
+  "tiles": [
+   3,
+   0,
+   0,
+   1,
+   2,
+   0,
+   0,
+   0
+  ],
+  "leftOpen": true,
+  "rightOpen": true,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 4,
+    "x": 75,
+    "y": 173,
+    "w": 53,
+    "h": 146,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 304,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 128,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 20,
+    "x": 111,
+    "y": 148,
+    "w": 18,
+    "h": 26,
+    "amount": 10,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 37,
+    "x": 299,
+    "y": 65,
+    "w": 199,
+    "h": 174,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Goodbye...",
+  "backPict": 200,
+  "tiles": [
+   4,
+   0,
+   0,
+   0,
+   0,
+   5,
+   4,
+   6
+  ],
+  "leftOpen": true,
+  "rightOpen": false,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 5,
+    "x": 285,
+    "y": 188,
+    "w": 107,
+    "h": 37,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 8,
+    "x": 57,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 19,
+    "x": 123,
+    "y": 88,
+    "w": 73,
+    "h": 64,
+    "amount": 1000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 37,
+    "x": 258,
+    "y": 80,
+    "w": 159,
+    "h": 171,
+    "amount": 0,
+    "extra": 0,
+    "on": true,
+    "target": -1
+   },
+   {
+    "type": 40,
+    "x": 108,
+    "y": 73,
+    "w": 102,
+    "h": 93,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ },
+ {
+  "name": "Your Dreams...",
+  "backPict": 202,
+  "tiles": [
+   7,
+   1,
+   3,
+   2,
+   2,
+   3,
+   1,
+   6
+  ],
+  "leftOpen": false,
+  "rightOpen": false,
+  "enemyKind": 0,
+  "enemyCount": 0,
+  "startsDark": false,
+  "startsAirOff": false,
+  "objects": [
+   {
+    "type": 8,
+    "x": 423,
+    "y": 325,
+    "w": 48,
+    "h": 13,
+    "amount": 44,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 10,
+    "x": 425,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 96,
+    "extra": 17,
+    "on": false,
+    "target": 56
+   },
+   {
+    "type": 18,
+    "x": 28,
+    "y": 268,
+    "w": 32,
+    "h": 29,
+    "amount": 423,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 4,
+    "x": 26,
+    "y": 296,
+    "w": 397,
+    "h": 39,
+    "amount": 0,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 10,
+    "x": 55,
+    "y": 24,
+    "w": 48,
+    "h": 13,
+    "amount": 96,
+    "extra": 21,
+    "on": true,
+    "target": 60
+   },
+   {
+    "type": 16,
+    "x": 94,
+    "y": 267,
+    "w": 32,
+    "h": 29,
+    "amount": 5000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 132,
+    "y": 267,
+    "w": 32,
+    "h": 29,
+    "amount": 5000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 16,
+    "x": 174,
+    "y": 267,
+    "w": 32,
+    "h": 29,
+    "amount": 5000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 213,
+    "y": 275,
+    "w": 48,
+    "h": 21,
+    "amount": 5000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 267,
+    "y": 275,
+    "w": 48,
+    "h": 21,
+    "amount": 5000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   },
+   {
+    "type": 17,
+    "x": 320,
+    "y": 275,
+    "w": 48,
+    "h": 21,
+    "amount": 5000,
+    "extra": 0,
+    "on": false,
+    "target": -1
+   }
+  ]
+ }
+]
