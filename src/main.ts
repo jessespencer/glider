@@ -1,3 +1,4 @@
+import { createAbout } from "./about";
 import { createMenu } from "./menu";
 import { PixelFont } from "./pixelFont";
 import type { FontMetrics } from "./pixelFont";
@@ -105,6 +106,7 @@ async function start(): Promise<void> {
   game = createGame(house, startRoom, true);
   const sounds = createSounds();
   const title = createTitle(art);
+  const about = createAbout();
   const menu = createMenu(house, sprites, {
     newGame() {
       sounds.unlock();
@@ -116,6 +118,7 @@ async function start(): Promise<void> {
       game = createGame(house, roomIndex);
       beginFlight(game);
     },
+    showAbout: () => about.open(),
     toggleSound: () => sounds.toggle(),
     toggleBassBeat() {
       sounds.unlock();
@@ -128,6 +131,7 @@ async function start(): Promise<void> {
   window.addEventListener("resize", resize);
   window.addEventListener("keydown", (event) => {
     sounds.unlock();
+    if (about.isOpen()) return;
     handleKey(event, true);
   });
   window.addEventListener("keyup", (event) => handleKey(event, false));
@@ -167,7 +171,7 @@ async function start(): Promise<void> {
   const frame = (now: number): void => {
     pending += Math.min(MAX_FRAME_SECONDS, (now - last) / 1000);
     last = now;
-    if (menu.isOpen()) pending = 0;
+    if (menu.isOpen() || about.isOpen()) pending = 0;
     while (pending >= STEP_SECONDS) {
       step(game, house, input, STEP_SECONDS);
       pending -= STEP_SECONDS;

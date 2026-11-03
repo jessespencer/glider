@@ -1,8 +1,20 @@
-# Glider
+# Glider: a Glider 4.0 tribute
 
-A private remake prototype of Glider for Windows: fly a paper plane through a house on floor vents. It keeps the original look and side panels, zoomed as large as the window allows while staying pixel-crisp, and plays all 63 rooms of the original house, from "Welcome..." to the window in "Goodbye...".
+An unofficial fan remake of **Glider for Windows** (Glider/WIN 4.01, 1994), the Windows port of John Calhoun's Glider 4.0. Fly a paper plane through all 63 rooms of "The House", riding floor vents from "Welcome..." to the open window in "Goodbye...". It keeps the original look and side panels, zoomed as large as the window allows while staying pixel-crisp.
 
-## Run
+**Play it:** https://jessespencer.github.io/glider/
+
+Arrow keys fly, Space fires rubber bands, Enter burns battery power to zoom forward, F toggles fullscreen, R restarts. The Rooms menu jumps straight to any room.
+
+## Credits
+
+- **Glider** by John Calhoun: programming, art, sounds and concept. Glider 4.0 was published by Casady & Greene, Inc. in 1991; the rights went back to John Calhoun after Casady & Greene closed in 2003.
+- **Glider for Windows**: Windows programming by Gregg Bieser, Brass Ring Software. Published by Casady & Greene and Powerhouse Entertainment.
+- The graphics, sounds and rooms come from Glider for Windows and belong to their creators. The scoreboard lettering uses Wine's copy of the Windows bitmap fonts.
+
+This tribute isn't affiliated with or endorsed by John Calhoun or Soft Dorothy LLC. Play the real thing: [Glider for Mac](https://apps.apple.com/us/app/glider/id482536700?mt=12), or Glider Classic for iPhone and iPad. Calhoun's [Glider 4.0 source](https://github.com/softdorothy/Glider4) is under the MIT License.
+
+## Run it locally
 
 ```bash
 npm install
@@ -10,8 +22,14 @@ npm run import-assets
 npm run dev -- --port 5273
 ```
 
-Open http://localhost:5273. Arrow keys fly, Space fires rubber bands, Enter burns battery power to zoom forward, F toggles fullscreen, R restarts.
+Open http://localhost:5273. Add `?room=12` to start in a room, or open `?sounds` to audition the original sounds.
 
-The Rooms menu jumps straight to any room. Add `?room=12` to start in a room, or open `?sounds` to audition the original sounds.
+`import-assets` reads a local Glider for Windows install in `~/Games/Prefixes/GLIDER` and writes `public/assets`. Those files aren't kept in this branch.
 
-`import-assets` reads the local Glider install in `~/Games/Prefixes/GLIDER` and writes `public/assets`. Those graphics and rooms are copyrighted placeholders (© 1994 Casady & Greene, John Calhoun), so don't publish them.
+## Deploy
+
+```bash
+npm run deploy
+```
+
+Builds the game, assets included, and publishes it to the `gh-pages` branch, which GitHub Pages serves.

@@ -91,7 +91,7 @@ function buildBackdrop(art: Art): HTMLCanvasElement {
   ctx.rotate(Math.PI / 2);
   art.font.draw(ctx, "2026", 0, 0, CYAN);
   ctx.restore();
-  art.font.draw(ctx, "A paper plane. A very big house.", WORDMARK_X, WORDMARK_Y + 88, CYAN);
+  art.font.draw(ctx, "A tribute to Glider 4.0", WORDMARK_X, WORDMARK_Y + 88, CYAN);
 
   ctx.strokeStyle = CYAN;
   ctx.lineWidth = 1;
