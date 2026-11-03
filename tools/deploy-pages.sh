@@ -23,7 +23,7 @@ else
   git -C "$site" checkout -q --orphan gh-pages
 fi
 
-git -C "$site" rm -rq --ignore-unmatch .
+git -C "$site" rm -rqf --ignore-unmatch .
 cp -R dist/. "$site"/
 git -C "$site" add -A
 git -C "$site" commit -q -m "Deploy $(git rev-parse --short HEAD)" || echo "Nothing changed to deploy."
