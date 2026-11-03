@@ -6,6 +6,19 @@ An unofficial fan remake of **Glider for Windows** (Glider/WIN 4.01, 1994), the 
 
 Arrow keys fly, Space fires rubber bands, Enter burns battery power to zoom forward, F toggles fullscreen, R restarts. The Rooms menu jumps straight to any room.
 
+## What's different
+
+It aims to feel like the original, with some small improvements:
+
+- **Sharper, bigger picture:** the game fills the window at a pixel-perfect zoom, keeping the original side panels and scoreboard.
+- **Clearer air:** vent and fan air draws in front of paintings, mirrors and furniture, and fans show their own wind stream.
+- **More physical:** fans blast you with real momentum and turn the plane to face the wind, the kettle's steam throws you, rising air slams you into furniture above it, and you can land and slide on spilled grease.
+- **Livelier rooms:** mirrors reflect the plane, windows flash with lightning, the shredder actually shreds, the final window is open, and dark rooms still show flames, enemies and switches.
+- **Kinder restarts:** a crash restarts you at the top of the room, on the side you last reached.
+- **Extras:** a time bonus for each room, a counting score ticker, a new title screen with a how-to-play box, a Rooms menu, and an optional bass pulse.
+
+Some details are best guesses where the original files don't say, like which enemies each room uses and a few sounds.
+
 ## Credits
 
 - **Glider** by John Calhoun: programming, art, sounds and concept. Glider 4.0 was published by Casady & Greene, Inc. in 1991; the rights went back to John Calhoun after Casady & Greene closed in 2003.
