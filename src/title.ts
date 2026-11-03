@@ -12,8 +12,9 @@ const DISSOLVE_SECONDS = FADE_IN_SECONDS * 0.7;
 const DISSOLVE_CELL = 16;
 
 const TIP_SECONDS = 3.2;
-const TIP_X = 306;
-const TIP_Y = 34;
+// The tips sit in a framed box tucked into the window's top-right corner.
+const TIP_BOX: Rect = { x: ROOM_W - 8 - 168, y: 10, w: 168, h: 96 };
+const TIP_PADDING = 8;
 const TIP_LINE_HEIGHT = 16;
 const PROMPT_Y = 320;
 const CONTROLS_BOX: Rect = { x: 8, y: 262, w: 160, h: 72 };
@@ -128,10 +129,19 @@ function buildBackdrop(art: Art): HTMLCanvasElement {
 
 function drawTip(ctx: CanvasRenderingContext2D, art: Art, time: number): void {
   const tip = TIPS[Math.floor(time / TIP_SECONDS) % TIPS.length];
+  const box = TIP_BOX;
+  ctx.fillStyle = "#000000";
+  ctx.fillRect(box.x, box.y, box.w, box.h);
+  ctx.strokeStyle = CYAN;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(box.x + 0.5, box.y + 0.5, box.w - 1, box.h - 1);
   tip.lines.forEach((line, index) => {
-    art.font.draw(ctx, line, TIP_X, TIP_Y + index * TIP_LINE_HEIGHT, index === 0 ? WHITE : CYAN);
+    const y = box.y + TIP_PADDING - 3 + index * TIP_LINE_HEIGHT;
+    art.font.draw(ctx, line, box.x + TIP_PADDING, y, index === 0 ? WHITE : CYAN);
   });
-  drawSprite(ctx, art, tip.sprite, TIP_X, TIP_Y + TIP_LINE_HEIGHT * 3 + 8);
+  const spriteTop = box.y + TIP_PADDING + TIP_LINE_HEIGHT * 3;
+  const spriteRoom = box.y + box.h - TIP_PADDING - spriteTop;
+  drawSprite(ctx, art, tip.sprite, box.x + (box.w - tip.sprite.w) / 2, spriteTop + (spriteRoom - tip.sprite.h) / 2);
 }
 
 function drawPrompt(ctx: CanvasRenderingContext2D, art: Art, time: number): void {
