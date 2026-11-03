@@ -12,19 +12,11 @@ const DISSOLVE_SECONDS = FADE_IN_SECONDS * 0.7;
 const DISSOLVE_CELL = 16;
 
 const TIP_SECONDS = 3.2;
-// The tips sit in a framed box tucked into the window's top-right corner.
+// The tips sit in the window's top-right corner.
 const TIP_BOX: Rect = { x: ROOM_W - 8 - 168, y: 10, w: 168, h: 96 };
 const TIP_PADDING = 8;
 const TIP_LINE_HEIGHT = 16;
 const PROMPT_Y = 320;
-const CONTROLS_BOX: Rect = { x: 8, y: 262, w: 160, h: 72 };
-const CONTROLS_LINE_HEIGHT = 16;
-/** The bitmap font has no arrow glyphs, so the keys are spelled out. */
-const CONTROLS: [string, string][] = [
-  ["Left / Right", "fly"],
-  ["Space", "rubber bands"],
-  ["Enter", "battery boost"],
-];
 const PROMPT_BLINK_SECONDS = 0.6;
 
 const WORDMARK_SCALE = 5;
@@ -87,21 +79,6 @@ function drawWordmark(ctx: CanvasRenderingContext2D, art: Art): number {
   return WORDMARK_X + scaledW;
 }
 
-/** A small key guide for anyone who has never played, set over the empty corner of the desk. */
-function drawControls(ctx: CanvasRenderingContext2D, art: Art): void {
-  const box = CONTROLS_BOX;
-  ctx.fillStyle = "#000000";
-  ctx.fillRect(box.x, box.y, box.w, box.h);
-  ctx.strokeStyle = CYAN;
-  ctx.strokeRect(box.x + 0.5, box.y + 0.5, box.w - 1, box.h - 1);
-  art.font.draw(ctx, "How to play", box.x + 8, box.y + 5, WHITE);
-  CONTROLS.forEach(([key, action], index) => {
-    const y = box.y + 5 + (index + 1) * CONTROLS_LINE_HEIGHT;
-    art.font.draw(ctx, key, box.x + 8, y, CYAN);
-    art.font.draw(ctx, action, box.x + box.w - 8 - art.font.measure(action), y, WHITE);
-  });
-}
-
 function buildBackdrop(art: Art): HTMLCanvasElement {
   const [canvas, ctx] = makeCanvas(ROOM_W, ROOM_H);
   ctx.fillStyle = "#000000";
@@ -117,8 +94,6 @@ function buildBackdrop(art: Art): HTMLCanvasElement {
   ctx.restore();
   art.font.draw(ctx, "A tribute to Glider 4.0", WORDMARK_X, WORDMARK_Y + 88, CYAN);
 
-  drawControls(ctx, art);
-
   ctx.strokeStyle = CYAN;
   ctx.lineWidth = 1;
   ctx.strokeRect(0.5, 0.5, ROOM_W - 1, ROOM_H - 1);
@@ -132,9 +107,6 @@ function drawTip(ctx: CanvasRenderingContext2D, art: Art, time: number): void {
   const box = TIP_BOX;
   ctx.fillStyle = "#000000";
   ctx.fillRect(box.x, box.y, box.w, box.h);
-  ctx.strokeStyle = CYAN;
-  ctx.lineWidth = 1;
-  ctx.strokeRect(box.x + 0.5, box.y + 0.5, box.w - 1, box.h - 1);
   tip.lines.forEach((line, index) => {
     const y = box.y + TIP_PADDING - 3 + index * TIP_LINE_HEIGHT;
     art.font.draw(ctx, line, box.x + TIP_PADDING, y, index === 0 ? WHITE : CYAN);

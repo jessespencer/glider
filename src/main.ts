@@ -1,4 +1,4 @@
-import { createAbout } from "./about";
+import { createAbout, createHowToPlay } from "./dialogs";
 import { createMenu } from "./menu";
 import { PixelFont } from "./pixelFont";
 import type { FontMetrics } from "./pixelFont";
@@ -107,6 +107,8 @@ async function start(): Promise<void> {
   const sounds = createSounds();
   const title = createTitle(art);
   const about = createAbout();
+  const howToPlay = createHowToPlay();
+  const isDialogOpen = (): boolean => about.isOpen() || howToPlay.isOpen();
   const menu = createMenu(house, sprites, {
     newGame() {
       sounds.unlock();
@@ -119,6 +121,7 @@ async function start(): Promise<void> {
       beginFlight(game);
     },
     showAbout: () => about.open(),
+    showHowToPlay: () => howToPlay.open(),
     toggleSound: () => sounds.toggle(),
     toggleBassBeat() {
       sounds.unlock();
@@ -131,7 +134,7 @@ async function start(): Promise<void> {
   window.addEventListener("resize", resize);
   window.addEventListener("keydown", (event) => {
     sounds.unlock();
-    if (about.isOpen()) return;
+    if (isDialogOpen()) return;
     handleKey(event, true);
   });
   window.addEventListener("keyup", (event) => handleKey(event, false));
@@ -171,7 +174,7 @@ async function start(): Promise<void> {
   const frame = (now: number): void => {
     pending += Math.min(MAX_FRAME_SECONDS, (now - last) / 1000);
     last = now;
-    if (menu.isOpen() || about.isOpen()) pending = 0;
+    if (menu.isOpen() || isDialogOpen()) pending = 0;
     while (pending >= STEP_SECONDS) {
       step(game, house, input, STEP_SECONDS);
       pending -= STEP_SECONDS;

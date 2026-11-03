@@ -7,6 +7,7 @@ const ICON_H = 13;
 export interface MenuActions {
   newGame(): void;
   showAbout(): void;
+  showHowToPlay(): void;
   goToRoom(roomIndex: number): void;
   toggleSound(): boolean;
   toggleBassBeat(): boolean;
@@ -131,7 +132,11 @@ export function createMenu(rooms: Room[], sprites: HTMLImageElement, actions: Me
     bassBeatItem.textContent = actions.toggleBassBeat() ? "Bass Beat: on" : "Bass Beat: off";
   });
 
-  addMenu("Game", [menuItem("New Game", actions.newGame), menuItem("About This Tribute...", actions.showAbout)]);
+  addMenu("Game", [
+    menuItem("New Game", actions.newGame),
+    menuItem("How to Play...", actions.showHowToPlay),
+    menuItem("About This Tribute...", actions.showAbout),
+  ]);
   addMenu("Rooms", roomItems, "rooms");
   addMenu("Options", [soundItem, bassBeatItem, menuItem("Fullscreen", actions.toggleFullscreen)]);
 
