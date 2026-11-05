@@ -24,6 +24,9 @@ AIR_SIDE_COLOR, AIR_SIDE_MASK = 17, 16
 PANEL_LEFT, PANEL_RIGHT = 2, 3
 STAIRS_UP, STAIRS_DOWN = 5, 6
 TITLE_SCENE = 28
+# The right-facing plane in the sprite sheet (PLANE_FORWARD in src/render.ts), centered on a square tab icon.
+FAVICON_PLANE = (2, 3, 44, 16)
+FAVICON_SIZE = 48
 SOUND_TYPE = 0xF009
 # Room backPictID -> bitmap resource. Matched by room names and screenshots of the original.
 BACKGROUNDS = {200: 7, 201: 8, 202: 30, 203: 9, 204: 31, 205: 10, 206: 32, 207: 29, 208: 33, 209: 34}
@@ -94,6 +97,16 @@ def write_masked(bitmaps, color_id, mask_id, name):
     # The game ANDs the mask onto the screen, so black mask pixels are the sprite's solid area.
     rows = [[color[y][x] + (255 if mask[y][x][0] < 128 else 0,) for x in range(w)] for y in range(h)]
     write_png(os.path.join(OUT_DIR, name), w, h, rows)
+    return rows
+
+
+def write_favicon(sprites, name):
+    px, py, pw, ph = FAVICON_PLANE
+    left, top = (FAVICON_SIZE - pw) // 2, (FAVICON_SIZE - ph) // 2
+    rows = [[(0, 0, 0, 0)] * FAVICON_SIZE for _ in range(FAVICON_SIZE)]
+    for y in range(ph):
+        rows[top + y][left:left + pw] = sprites[py + y][px:px + pw]
+    write_png(os.path.join(OUT_DIR, name), FAVICON_SIZE, FAVICON_SIZE, rows)
 
 
 def write_opaque(bitmaps, res_id, name):
@@ -194,7 +207,8 @@ def main():
         sys.exit("Glider install not found at " + GAME_DIR)
     os.makedirs(OUT_DIR, exist_ok=True)
     bitmaps = read_resources(os.path.join(GAME_DIR, "GLIDER.EXE"), BITMAP_TYPE)
-    write_masked(bitmaps, SPRITE_COLOR, SPRITE_MASK, "sprites.png")
+    sprites = write_masked(bitmaps, SPRITE_COLOR, SPRITE_MASK, "sprites.png")
+    write_favicon(sprites, "favicon.png")
     write_masked(bitmaps, AIR_UP_COLOR, AIR_UP_MASK, "air-up.png")
     write_masked(bitmaps, AIR_SIDE_COLOR, AIR_SIDE_MASK, "air-side.png")
     write_opaque(bitmaps, SPRITE_COLOR, "sprites-opaque.png")
