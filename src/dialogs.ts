@@ -57,7 +57,7 @@ const ABOUT = `
       is open under the MIT License.</p>
 
     <h3>This tribute</h3>
-    <p>Built by <a href="https://jessedestroys.com/" target="_blank" rel="noopener">Jesse Destroys</a>.
+    <p>Built by <a href="https://jessespencer.dev/" target="_blank" rel="noopener">Jesse Destroys</a>.
       <a href="https://github.com/jessespencer/glider" target="_blank" rel="noopener">Source on GitHub</a>.</p>
 `;
 
