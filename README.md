@@ -2,7 +2,7 @@
 
 An unofficial fan remake of **Glider for Windows** (Glider/WIN 4.01, 1994), the Windows port of John Calhoun's Glider 4.0. Fly a paper plane through all 63 rooms of "The House", riding floor vents from "Welcome..." to the open window in "Goodbye...". It keeps the original look and side panels, zoomed as large as the window allows while staying pixel-crisp.
 
-**Play it:** https://jessedestroys.com/glider/
+**Play it:** https://jessespencer.dev/glider/
 
 Arrow keys fly, Space fires rubber bands, Enter burns battery power to zoom forward, F toggles fullscreen, R restarts. The Rooms menu jumps straight to any room.
 
@@ -27,7 +27,7 @@ Some details are best guesses where the original files don't say, like which ene
 
 This tribute isn't affiliated with or endorsed by John Calhoun or Soft Dorothy LLC. Play the real thing: [Glider for Mac](https://apps.apple.com/us/app/glider/id482536700?mt=12), or Glider Classic for iPhone and iPad. Calhoun's own [Glider 4.0 source](https://github.com/softdorothy/Glider4) is under the MIT License.
 
-Built by [Jesse Destroys](https://jessedestroys.com/).
+Built by [Jesse Destroys](https://jessespencer.dev/).
 
 ## Run it locally
 
